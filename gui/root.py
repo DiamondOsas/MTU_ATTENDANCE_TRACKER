@@ -45,7 +45,7 @@ class AttendanceApp(ctk.CTk):
         self.delete_button = ctk.CTkButton(self, text="Delete Students", command=self.placeholder_command)
         self.delete_button.grid(row=3, column=0, padx=40, pady=10, sticky="ew")
 
-        self.view_attendance_button = ctk.CTkButton(self, text="View Attendance", command=self.placeholder_command)
+        self.view_attendance_button = ctk.CTkButton(self, text="View Attendance", command=self.open_viewer_window)
         self.view_attendance_button.grid(row=4, column=0, padx=40, pady=10, sticky="ew")
 
         self.print_absentees_button = ctk.CTkButton(self, text="Print Absentees", command=self.placeholder_command)
@@ -65,7 +65,16 @@ class AttendanceApp(ctk.CTk):
         register_app = RegisterWindow()
         register_app.mainloop()
 
-    #This placeholder command should be implemnted in the func/register.gui
+    def open_viewer_window(self):
+        """
+        Closes the main menu and opens the attendance viewer window.
+        """
+        self.destroy() # Close this window
+        # We import here to avoid a circular import at the module level.
+        from gui.viewer.chooseviewergui import ChooseViewerWindow
+        viewer_app = ChooseViewerWindow()
+        viewer_app.mainloop()
+
     def placeholder_command(self):
         """
         A placeholder command for buttons that don't have functionality yet.

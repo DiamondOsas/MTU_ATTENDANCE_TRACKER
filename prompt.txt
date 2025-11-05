@@ -1,0 +1,22 @@
+This is a attendace tracker project
+Use simple code jnr dev can understand
+Comment so as it is easy to read the code
+Comment on places one can esaily change to other values so that one can easily do that 
+The appliaction should be acessed form main.py
+
+
+TASK
+Please add more and refactor the current implemetation of the task below
+
+Make a new module called Edit Students (It should replace the Delete Students in the root.py)
+
+When clicked it then lauches a chooseviewser.gui which then checks db/allstudents/ and then list all the csv files for the user to choose to view when one is chosen it should then take the user to viewer.gui which is just like an excel to just view and edit csv files
+Please the csv file that is choosen should be dynamic to how many
+
+(Both the chooseviewwer.py nad vewer.py should have navigation button to go to the proveois page)
+Update requrements.txt with the neccesay libries
+One should be able too save the file too to update it 
+Pls all the logic of the chooseviewer.py and viwergui.py shliuld be writtenn in func/ viewer.py
+code and pls the real code should not be as bulky as this but should have extesniive features using other libries like eidting of inidvidual column copy pasete undo save and other features
+
+i
