@@ -4,7 +4,7 @@ class ChooseViewerWindow(ctk.CTk):
     """
     A window that allows the user to choose between viewing 100-level or 200-level attendance.
     """
-    def __init__(self):
+    def __init__(self, viewer_type="attendance"):
         super().__init__()
 
         self.title("Choose Level to View")

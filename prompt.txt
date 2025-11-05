@@ -19,4 +19,3 @@ One should be able too save the file too to update it
 Pls all the logic of the chooseviewer.py and viwergui.py shliuld be writtenn in func/ viewer.py
 code and pls the real code should not be as bulky as this but should have extesniive features using other libries like eidting of inidvidual column copy pasete undo save and other features
 
-i
