@@ -6,7 +6,7 @@ The appliaction should be acessed form main.py
 
 
 TASK
-Please add more and refactor the current implemetation of the task below
+
 
 Make a new module called Edit Students (It should replace the Delete Students in the root.py)
 

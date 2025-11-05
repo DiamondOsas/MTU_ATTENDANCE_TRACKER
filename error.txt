@@ -1,0 +1,48 @@
+CONSTRAINTS
+Please check online on how to fix and fix this error
+
+
+TASK
+
+It happens when i try to view a file from choose viewer.gui going to viewergui.
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python313\Lib\tkinter\__init__.py", line 2068, in __call__
+    return self.func(*args)
+           ~~~~~~~~~^^^^^^^
+  File "C:\Users\user\AppData\Local\Programs\Python\Python313\Lib\site-packages\customtkinter\windows\widgets\ctk_button.py", line 554, in _clicked
+    self._command()
+    ~~~~~~~~~~~~~^^
+  File "C:\PROGRAMMING\CHAPEL\ATTENDANCE SOFTWARE\gui\viewer\chooseviewergui.py", line 35, in <lambda>
+    button = ctk.CTkButton(self, text=button_text, command=lambda path=file_path: self.open_viewer(path))
+                                                                                  ~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\PROGRAMMING\CHAPEL\ATTENDANCE SOFTWARE\gui\viewer\chooseviewergui.py", line 50, in open_viewer
+    viewer_app = ViewerWindow(file_path, self.viewer_type)
+  File "C:\PROGRAMMING\CHAPEL\ATTENDANCE SOFTWARE\gui\viewer\viewergui.py", line 28, in __init__
+    self.grid_row_configure(1, weight=1)
+    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Local\Programs\Python\Python313\Lib\tkinter\__init__.py", line 2546, in __getattr__
+    return getattr(self.tk, attr)
+AttributeError: '_tkinter.tkapp' object has no attribute 'grid_row_configure'
+
+
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python313\Lib\tkinter\__init__.py", line 2068, in __call__
+    return self.func(*args)
+           ~~~~~~~~~^^^^^^^
+  File "C:\Users\user\AppData\Local\Programs\Python\Python313\Lib\site-packages\customtkinter\windows\widgets\ctk_button.py", line 554, in _clicked
+    self._command()
+    ~~~~~~~~~~~~~^^
+  File "C:\PROGRAMMING\CHAPEL\ATTENDANCE SOFTWARE\gui\viewer\chooseviewergui.py", line 35, in <lambda>
+    button = ctk.CTkButton(self, text=button_text, command=lambda path=file_path: self.open_viewer(path))
+                                                                                  ~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\PROGRAMMING\CHAPEL\ATTENDANCE SOFTWARE\gui\viewer\chooseviewergui.py", line 50, in open_viewer
+    viewer_app = ViewerWindow(file_path, self.viewer_type)
+  File "C:\PROGRAMMING\CHAPEL\ATTENDANCE SOFTWARE\gui\viewer\viewergui.py", line 28, in __init__
+    self.grid_row_configure(1, weight=1)
+    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Local\Programs\Python\Python313\Lib\tkinter\__init__.py", line 2546, in __getattr__
+    return getattr(self.tk, attr)
+AttributeError: '_tkinter.tkapp' object has no attribute 'grid_row_configure'
+
+

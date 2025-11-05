@@ -42,8 +42,8 @@ class AttendanceApp(ctk.CTk):
         self.register_button = ctk.CTkButton(self, text="Register Students", command=self.open_register_window)
         self.register_button.grid(row=2, column=0, padx=40, pady=10, sticky="ew")
 
-        self.delete_button = ctk.CTkButton(self, text="Delete Students", command=self.placeholder_command)
-        self.delete_button.grid(row=3, column=0, padx=40, pady=10, sticky="ew")
+        self.edit_students_button = ctk.CTkButton(self, text="Edit Students", command=self.open_edit_students_window)
+        self.edit_students_button.grid(row=3, column=0, padx=40, pady=10, sticky="ew")
 
         self.view_attendance_button = ctk.CTkButton(self, text="View Attendance", command=self.open_viewer_window)
         self.view_attendance_button.grid(row=4, column=0, padx=40, pady=10, sticky="ew")
@@ -74,6 +74,21 @@ class AttendanceApp(ctk.CTk):
         from gui.viewer.chooseviewergui import ChooseViewerWindow
         viewer_app = ChooseViewerWindow()
         viewer_app.mainloop()
+
+    def open_edit_students_window(self):
+        """
+        Closes the main menu and opens the window to choose a student list to edit.
+        """
+        self.destroy()
+        from gui.viewer.chooseviewergui import ChooseViewerWindow
+        edit_app = ChooseViewerWindow(viewer_type="edit") # Pass a parameter to distinguish
+        edit_app.mainloop()
+
+    def open_absentees_viewer_window(self):
+        """
+        A placeholder for viewing absentees.
+        """
+        self.placeholder_command()
 
     def placeholder_command(self):
         """
