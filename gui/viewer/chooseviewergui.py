@@ -10,7 +10,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 from func.viewer import get_all_students_files
 
 
-class ChooseViewerWindow(ctk.CTk):
+class ChooseViewerWindow(ctk.CTkToplevel):
     """
     Window that allows the user to choose a student data file to view or edit.
     """
@@ -22,7 +22,7 @@ class ChooseViewerWindow(ctk.CTk):
             parent: The parent window that opened this window
             viewer_type: "view" for viewing attendance, "edit" for editing student data
         """
-        super().__init__()
+        super().__init__(parent)
         
         self.parent = parent
         self.viewer_type = viewer_type
