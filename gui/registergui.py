@@ -2,18 +2,18 @@ import customtkinter as ctk
 from func.register import register_student
 from tkinter import messagebox
 
-class RegisterWindow(ctk.CTk):
+class RegisterWindow(ctk.CTkToplevel):
     """
     GUI window for registering new students.
     This window provides a simple form for entering student details.
     """
-    def __init__(self):
+    def __init__(self, master):
         """
         Initializes the RegisterWindow.
         Sets up the window properties, creates the registration form widgets,
         and a button to go back to the main menu.
         """
-        super().__init__()
+        super().__init__(master)
 
         # --- 1. Window Configuration ---
         self.title("Register Students")
@@ -168,11 +168,8 @@ class RegisterWindow(ctk.CTk):
         """
         Closes the current register window and opens the main menu window.
         """
-        self.destroy() # Close this window
-        # We import here to avoid circular import issues
-        from gui.root import AttendanceApp
-        app = AttendanceApp()
-        app.mainloop()
+        self.master.deiconify()
+        self.destroy()
 
 if __name__ == "__main__":
     # This allows running this file directly for testing purposes

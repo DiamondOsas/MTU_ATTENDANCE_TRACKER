@@ -6,16 +6,7 @@ The appliaction should be acessed form main.py
 
 
 TASK
-
-
-Make a new module called Edit Students (It should replace the Delete Students in the root.py)
-
-When clicked it then lauches a chooseviewser.gui which then checks db/allstudents/ and then list all the csv files for the user to choose to view when one is chosen it should then take the user to viewer.gui which is just like an excel to just view and edit csv files
-Please the csv file that is choosen should be dynamic to how many
-
-(Both the chooseviewwer.py nad vewer.py should have navigation button to go to the proveois page)
-Update requrements.txt with the neccesay libries
-One should be able too save the file too to update it 
-Pls all the logic of the chooseviewer.py and viwergui.py shliuld be writtenn in func/ viewer.py
-code and pls the real code should not be as bulky as this but should have extesniive features using other libries like eidting of inidvidual column copy pasete undo save and other features
-
+When edit student data is cliked in root.py
+Let it open chooseviewer.py A window that allows the user to choose a student data file to view or edit form db/allstudents (It should be dynami such that it is the files that is there that should show on th gui for the user to select)
+Then when the user selects a file it should open viewergui.py(It should be liike a stnadrd excel application where user can edit, cells, save and do other major fucntionlity that one would expect make it comprehesive and use as much libries as possible)
+Update requirements.txt 

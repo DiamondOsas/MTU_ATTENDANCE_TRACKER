@@ -39,10 +39,10 @@ class AttendanceApp(ctk.CTk):
         # Each button corresponds to a major feature of the application.
         # Clicking a button will close the main menu and open the respective window.
 
-        self.register_button = ctk.CTkButton(self, text="Register Students", command=self.open_register_window)
+        self.register_button = ctk.CTkButton(self, text="Register New Students", command=self.open_register_window)
         self.register_button.grid(row=2, column=0, padx=40, pady=10, sticky="ew")
 
-        self.edit_students_button = ctk.CTkButton(self, text="Edit Students", command=self.open_edit_students_window)
+        self.edit_students_button = ctk.CTkButton(self, text="Edit Students Data", command=self.open_edit_students_window)
         self.edit_students_button.grid(row=3, column=0, padx=40, pady=10, sticky="ew")
 
         self.view_attendance_button = ctk.CTkButton(self, text="View Attendance", command=self.open_viewer_window)
@@ -59,30 +59,27 @@ class AttendanceApp(ctk.CTk):
         """
         Closes the main menu and opens the student registration window.
         """
-        self.destroy() # Close this window
+        self.withdraw()
         # We import here to avoid a circular import at the module level.
         from gui.registergui import RegisterWindow
-        register_app = RegisterWindow()
-        register_app.mainloop()
+        register_app = RegisterWindow(self)
 
     def open_viewer_window(self):
         """
         Closes the main menu and opens the attendance viewer window.
         """
-        self.destroy() # Close this window
+        self.withdraw()
         # We import here to avoid a circular import at the module level.
         from gui.viewer.chooseviewergui import ChooseViewerWindow
-        viewer_app = ChooseViewerWindow()
-        viewer_app.mainloop()
+        viewer_app = ChooseViewerWindow(self, viewer_type="view")  # Pass a parameter to distinguish
 
     def open_edit_students_window(self):
         """
         Closes the main menu and opens the window to choose a student list to edit.
         """
-        self.destroy()
+        self.withdraw()
         from gui.viewer.chooseviewergui import ChooseViewerWindow
-        edit_app = ChooseViewerWindow(viewer_type="edit") # Pass a parameter to distinguish
-        edit_app.mainloop()
+        edit_app = ChooseViewerWindow(self, viewer_type="edit") # Pass a parameter to distinguish
 
     def open_absentees_viewer_window(self):
         """
