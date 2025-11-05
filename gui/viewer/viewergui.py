@@ -88,7 +88,7 @@ class DataTable:
         self.sheet.set_all_column_widths()
 
 
-class ViewerWindow(ctk.CTk):
+class ViewerWindow(ctk.CTkToplevel):
     """
     Window that displays student data in an Excel-like interface for viewing and editing.
     """
@@ -101,7 +101,7 @@ class ViewerWindow(ctk.CTk):
             file_path: Path to the CSV file to be displayed
             editable: Whether the data should be editable
         """
-        super().__init__()
+        super().__init__(parent)
         
         self.parent = parent
         self.file_path = file_path
@@ -122,7 +122,7 @@ class ViewerWindow(ctk.CTk):
         # Configure window
         file_name = os.path.basename(file_path)
         self.title(f"{'Edit' if editable else 'View'} - {file_name}")
-        self.geometry("900x600")
+        self.geometry("300x400")
         
         # Create the table
         self.table = DataTable(self, self.df, editable)
@@ -131,22 +131,6 @@ class ViewerWindow(ctk.CTk):
         if self.editable:
             self.button_frame = ctk.CTkFrame(self)
             self.button_frame.pack(fill="x", padx=10, pady=(0, 10))
-            
-            # Button to add new row
-            self.add_row_button = ctk.CTkButton(
-                self.button_frame,
-                text="Add Row",
-                command=self.add_new_row
-            )
-            self.add_row_button.pack(side="left", padx=5, pady=5)
-            
-            # Button to delete selected row
-            self.delete_row_button = ctk.CTkButton(
-                self.button_frame,
-                text="Delete Selected Row",
-                command=self.delete_selected_row
-            )
-            self.delete_row_button.pack(side="left", padx=5, pady=5)
             
             # Save button
             self.save_button = ctk.CTkButton(
@@ -171,51 +155,6 @@ class ViewerWindow(ctk.CTk):
                 text="Ready" if not self.is_modified else "Modified - Save to keep changes"
             )
             self.status_label.pack(side="right", padx=5, pady=5)
-    
-    def add_new_row(self):
-        """
-        Adds a new empty row to the table.
-        """
-        # Add empty values for each column
-        new_row = {col: "" for col in self.df.columns}
-        self.df = pd.concat([self.df, pd.DataFrame([new_row])], ignore_index=True)
-        
-        # Refresh the table
-        self.table.refresh_table(self.df)
-        self.is_modified = True
-        
-        # Update status
-        if hasattr(self, 'status_label'):
-            self.status_label.configure(text="Modified - Save to keep changes")
-    
-    def delete_selected_row(self):
-        """
-        Deletes the currently selected row from the table.
-        """
-        try:
-            # Get the currently focused cell to determine which row to delete
-            current_widget = self.focus_get()
-            
-            # Find which row this widget belongs to
-            for i, row in enumerate(self.table.cells):
-                if current_widget in row:
-                    # Remove the row from the dataframe
-                    self.df = self.df.drop(self.df.index[i]).reset_index(drop=True)
-                    
-                    # Refresh the table
-                    self.table.refresh_table(self.df)
-                    self.is_modified = True
-                    
-                    # Update status
-                    if hasattr(self, 'status_label'):
-                        self.status_label.configure(text="Modified - Save to keep changes")
-                    
-                    return
-            
-            # If no specific row was identified, show a message
-            messagebox.showinfo("Info", "Click on a row to select it, then click 'Delete Selected Row'")
-        except Exception as e:
-            messagebox.showerror("Error", f"Could not delete row: {str(e)}")
     
     def save_changes(self):
         """

@@ -45,6 +45,10 @@ class AttendanceApp(ctk.CTk):
         self.edit_students_button = ctk.CTkButton(self, text="Edit Students Data", command=self.open_edit_students_window)
         self.edit_students_button.grid(row=3, column=0, padx=40, pady=10, sticky="ew")
 
+
+        self.add_attendance_button = ctk.CTkButton(self, text="Add Attendance", command=self.open_viewer_window)
+        self.add_attendance_button.grid(row=4, column=0, padx=40, pady=10, sticky="ew")
+
         self.view_attendance_button = ctk.CTkButton(self, text="View Attendance", command=self.open_viewer_window)
         self.view_attendance_button.grid(row=4, column=0, padx=40, pady=10, sticky="ew")
 
