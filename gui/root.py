@@ -48,7 +48,7 @@ class AttendanceApp(ctk.CTk):
         self.view_attendance_button = ctk.CTkButton(self, text="View Attendance", command=self.open_viewer_window)
         self.view_attendance_button.grid(row=4, column=0, padx=40, pady=10, sticky="ew")
 
-        self.print_absentees_button = ctk.CTkButton(self, text="Print Absentees", command=self.placeholder_command)
+        self.print_absentees_button = ctk.CTkButton(self, text="Print Absentees", command=self.open_absentees_viewer_window)
         self.print_absentees_button.grid(row=5, column=0, padx=40, pady=10, sticky="ew")
 
         self.settings_button = ctk.CTkButton(self, text="Settings", command=self.placeholder_command)
