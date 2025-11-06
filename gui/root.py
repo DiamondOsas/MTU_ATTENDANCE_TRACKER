@@ -32,7 +32,7 @@ class AttendanceApp(ctk.CTk):
         self.grid_columnconfigure(0, weight=1)
 
         # --- 2. Title Label ---
-        self.title_label = ctk.CTkLabel(self, text="Attendance Tracker", font=ctk.CTkFont(size=24, weight="bold"))
+        self.title_label = ctk.CTkLabel(self, text=" MTU Attendance Tracker", font=ctk.CTkFont(size=24, weight="bold"))
         self.title_label.grid(row=1, column=0, padx=20, pady=20)
 
         # --- 3. Menu Buttons ---
@@ -46,7 +46,7 @@ class AttendanceApp(ctk.CTk):
         self.edit_students_button.grid(row=3, column=0, padx=40, pady=10, sticky="ew")
 
 
-        self.add_attendance_button = ctk.CTkButton(self, text="Add Attendance", command=self.open_viewer_window)
+        self.add_attendance_button = ctk.CTkButton(self, text="Add Attendance", command=self.placeholder_command)
         self.add_attendance_button.grid(row=4, column=0, padx=40, pady=10, sticky="ew")
 
         self.view_attendance_button = ctk.CTkButton(self, text="View Attendance", command=self.open_viewer_window)
@@ -75,8 +75,8 @@ class AttendanceApp(ctk.CTk):
         self.withdraw()
         # We import here to avoid a circular import at the module level.
         from gui.choosecsvgui import ChooseViewerWindow
-        viewer_app = ChooseViewerWindow(self, viewer_type="view")  # Pass a parameter to distinguish
-
+        viewer_app = ChooseViewerWindow(self, viewer_type="view")  #
+        
     def open_edit_students_window(self):
         """
         Closes the main menu and opens the window to choose a student list to edit.
