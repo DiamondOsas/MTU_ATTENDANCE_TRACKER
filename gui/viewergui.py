@@ -218,5 +218,10 @@ class ViewerWindow(ctk.CTkToplevel):
         """
         Override destroy method to handle cleanup.
         """
-        self.protocol("WM_DELETE_WINDOW", self.on_closing)
+        self.master.deiconify()
+        
         super().destroy()
+       
+        
+
+

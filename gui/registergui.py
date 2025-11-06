@@ -169,6 +169,8 @@ class RegisterWindow(ctk.CTkToplevel):
         Closes the current register window and opens the main menu window.
         """
         self.master.deiconify()
+
+        
         self.destroy()
 
 if __name__ == "__main__":

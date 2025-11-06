@@ -85,7 +85,7 @@ class ChooseViewerWindow(ctk.CTkToplevel):
         # Cancel button
         self.cancel_button = ctk.CTkButton(
             self.button_frame,
-            text="Cancel",
+            text="Back to Menu",
             command=self.close_window
         )
         self.cancel_button.grid(row=0, column=1, padx=10, pady=10)
