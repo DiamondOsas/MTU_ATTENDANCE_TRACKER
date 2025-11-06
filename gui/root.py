@@ -1,4 +1,6 @@
 import customtkinter as ctk
+import threading
+from func.attendance import prepare_attendance_files
 
 # --- Global CustomTkinter Settings ---
 # These settings apply to the entire application and can be easily changed.
@@ -20,6 +22,13 @@ class AttendanceApp(ctk.CTk):
         This constructor sets up the main window and displays the available options.
         """
         super().__init__()
+
+        # --- Run the file preparation in a background thread ---
+        # This prevents the GUI from freezing while files are being copied.
+        prepare_thread = threading.Thread(target=prepare_attendance_files)
+        prepare_thread.daemon = True  # Allows the main app to exit even if the thread is running
+        prepare_thread.start()
+
 
         # --- 1. Main Window Configuration ---
         self.title("Attendance Tracker - Main Menu")

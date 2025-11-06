@@ -1,3 +1,4 @@
+
 This is a attendace tracker project
 Use simple code jnr dev can understand
 Comment so as it is easy to read the code
@@ -6,7 +7,10 @@ The appliaction should be acessed form main.py
 
 
 TASK
-When edit student data is cliked in root.py
-Let it open chooseviewer.py A window that allows the user to choose a student data file to view or edit form db/allstudents (It should be dynami such that it is the files that is there that should show on th gui for the user to select)
-Then when the user selects a file it should open viewergui.py(It should be liike a stnadrd excel application where user can edit, cells, save and do other major fucntionlity that one would expect make it comprehesive and use as much libries as possible)
-Update requirements.txt 
+Make a gui in addgui.py
+
+It should be a selcetion menu where one will choose which csv in db/attendace the user wants to choose
+It then tell drpodown to tell the user to choose types of programs just put mornin and evening but ssturcture it in such a eway that i can easiyl add more to that dropdown men please signify it in th code
+It should also have a button to then load a csv file (No fucntionality yet)
+
+The logic of this code sshould be done in attendance.py
