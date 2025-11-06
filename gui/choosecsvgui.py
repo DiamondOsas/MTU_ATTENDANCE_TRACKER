@@ -132,7 +132,7 @@ class ChooseViewerWindow(ctk.CTkToplevel):
             
             # If viewer_type is "edit", open the edit viewer, otherwise open a basic viewer
             if self.viewer_type == "edit":
-                from gui.viewer.viewergui import ViewerWindow
+                from gui.viewergui import ViewerWindow
                 self.destroy() # Destroy this window before opening the new one
                 
                 # Open the viewer window with edit capability
@@ -143,7 +143,7 @@ class ChooseViewerWindow(ctk.CTkToplevel):
                 )
             else:
                 # For viewing attendance (not implemented in this task)
-                from gui.viewer.viewergui import ViewerWindow
+                from gui.viewergui import ViewerWindow
                 self.destroy() # Destroy this window before opening the new one
                 
                 viewer_app = ViewerWindow(

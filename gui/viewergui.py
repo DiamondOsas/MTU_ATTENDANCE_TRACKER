@@ -122,8 +122,9 @@ class ViewerWindow(ctk.CTkToplevel):
         # Configure window
         file_name = os.path.basename(file_path)
         self.title(f"{'Edit' if editable else 'View'} - {file_name}")
-        self.geometry("300x400")
-        
+        #make the sellf.geomety below to change dependeing on where the parameters are being passed from if it is from viewer gui it should be the value below
+        self.geometry("350x400")
+        #if it from viewattendance 
         # Create the table
         self.table = DataTable(self, self.df, editable)
         
