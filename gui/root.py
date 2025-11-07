@@ -37,7 +37,7 @@ class AttendanceApp(ctk.CTk):
 
         # Configure the main window's grid layout to center the content.
         self.grid_rowconfigure(0, weight=1)
-        self.grid_rowconfigure(7, weight=1)
+        self.grid_rowconfigure(8, weight=1) # Adjusted to account for the new row
         self.grid_columnconfigure(0, weight=1)
 
         # --- 2. Title Label ---
@@ -55,27 +55,36 @@ class AttendanceApp(ctk.CTk):
         self.edit_students_button.grid(row=3, column=0, padx=40, pady=10, sticky="ew")
 
 
-        self.add_attendance_button = ctk.CTkButton(self, text="Add Attendance", command=self.placeholder_command)
+        self.add_attendance_button = ctk.CTkButton(self, text="Add Attendance", command=self.open_add_attendance_window)
         self.add_attendance_button.grid(row=4, column=0, padx=40, pady=10, sticky="ew")
 
         self.view_attendance_button = ctk.CTkButton(self, text="View Attendance", command=self.open_viewer_window)
-        self.view_attendance_button.grid(row=4, column=0, padx=40, pady=10, sticky="ew")
+        self.view_attendance_button.grid(row=5, column=0, padx=40, pady=10, sticky="ew")
 
         self.print_absentees_button = ctk.CTkButton(self, text="Print Absentees", command=self.open_absentees_viewer_window)
-        self.print_absentees_button.grid(row=5, column=0, padx=40, pady=10, sticky="ew")
+        self.print_absentees_button.grid(row=6, column=0, padx=40, pady=10, sticky="ew")
 
         self.settings_button = ctk.CTkButton(self, text="Settings", command=self.placeholder_command)
-        self.settings_button.grid(row=6, column=0, padx=40, pady=10, sticky="ew")
+        self.settings_button.grid(row=7, column=0, padx=40, pady=10, sticky="ew")
 
 
     def open_register_window(self):
         """
-        Closes the main menu and opens the student registration window.
+        Closes the main menu and opens the student registration window
         """
         self.withdraw()
         # We import here to avoid a circular import at the module level.
         from gui.registergui import RegisterWindow
         register_app = RegisterWindow(self)
+
+    def open_add_attendance_window(self):
+        """
+        Closes the main menu and opens the add attendance window.
+        """
+        self.withdraw()
+        # We import here to avoid a circular import at the module level.
+        from gui.attendance.addgui import AddAttendanceWindow
+        add_attendance_app = AddAttendanceWindow(self)
 
     def open_viewer_window(self):
         """

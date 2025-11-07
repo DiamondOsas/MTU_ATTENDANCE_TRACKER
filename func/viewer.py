@@ -46,3 +46,32 @@ def save_students_data(file_path, dataframe):
     Saves the dataframe to the specified CSV file.
     """
     dataframe.to_csv(file_path, index=False)
+
+def get_csv_columns(file_path):
+    """
+    Reads a CSV file and returns its column headers.
+    """
+    if not file_path or not os.path.exists(file_path):
+        return []
+    try:
+        df = pd.read_csv(file_path)
+        return df.columns.tolist()
+    except Exception as e:
+        print(f"Error reading CSV columns: {e}")
+        return []
+
+def get_column_data(file_path, column_name):
+    """
+    Reads a specific column from a CSV file and returns its data.
+    """
+    if not file_path or not os.path.exists(file_path) or not column_name:
+        return None
+    try:
+        df = pd.read_csv(file_path)
+        if column_name in df.columns:
+            return df[column_name].tolist()
+        else:
+            return None
+    except Exception as e:
+        print(f"Error reading column data: {e}")
+        return None

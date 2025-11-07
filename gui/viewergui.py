@@ -9,7 +9,7 @@ import tkinter as tk
 # Add the parent directory to the path so we can import from func module
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
-from func.viewer import get_students_data_from_file, save_students_data
+from func.viewer import get_students_data_from_file, save_students_data, get_csv_columns, get_column_data
 
 
 class DataTable:
@@ -91,8 +91,9 @@ class DataTable:
 class ViewerWindow(ctk.CTkToplevel):
     """
     Window that displays student data in an Excel-like interface for viewing and editing.
+    Can also be used to select a column from a CSV file.
     """
-    def __init__(self, parent, file_path, editable=True):
+    def __init__(self, parent, file_path, editable=True, mode="view"):
         """
         Initializes the ViewerWindow.
         
@@ -100,6 +101,7 @@ class ViewerWindow(ctk.CTkToplevel):
             parent: The parent window
             file_path: Path to the CSV file to be displayed
             editable: Whether the data should be editable
+            mode: "view" for normal viewing/editing, "select_column" for column selection
         """
         super().__init__(parent)
         
@@ -107,6 +109,8 @@ class ViewerWindow(ctk.CTkToplevel):
         self.file_path = file_path
         self.editable = editable
         self.is_modified = False
+        self.mode = mode
+        self.selected_column_data = None
         
         # Load the data from file
         try:
@@ -121,12 +125,24 @@ class ViewerWindow(ctk.CTkToplevel):
         
         # Configure window
         file_name = os.path.basename(file_path)
-        self.title(f"{'Edit' if editable else 'View'} - {file_name}")
-        #make the sellf.geomety below to change dependeing on where the parameters are being passed from if it is from viewer gui it should be the value below
-        self.geometry("350x400")
-        #if it from viewattendance 
+        if self.mode == "select_column":
+            self.title(f"Select Column - {file_name}")
+            self.geometry("400x250")
+        else:
+            self.title(f"{'Edit' if editable else 'View'} - {file_name}")
+            self.geometry("800x600")
+
+        if self.mode == "select_column":
+            self.setup_column_selection()
+        else:
+            self.setup_data_viewer()
+    
+    def setup_data_viewer(self):
+        """
+        Sets up the widgets for the data viewing/editing mode.
+        """
         # Create the table
-        self.table = DataTable(self, self.df, editable)
+        self.table = DataTable(self, self.df, self.editable)
         
         # Create button frame
         if self.editable:
@@ -156,6 +172,72 @@ class ViewerWindow(ctk.CTkToplevel):
                 text="Ready" if not self.is_modified else "Modified - Save to keep changes"
             )
             self.status_label.pack(side="right", padx=5, pady=5)
+
+    def setup_column_selection(self):
+        """
+        Sets up the widgets for the column selection mode.
+        """
+        self.grid_columnconfigure(0, weight=1)
+        self.grid_rowconfigure(2, weight=1)
+
+        # --- Title ---
+        self.selection_title = ctk.CTkLabel(self, text="Select the Matric Number Column", font=ctk.CTkFont(size=16, weight="bold"))
+        self.selection_title.grid(row=0, column=0, padx=20, pady=20)
+
+        # --- Column Dropdown ---
+        self.column_frame = ctk.CTkFrame(self)
+        self.column_frame.grid(row=1, column=0, padx=20, pady=10, sticky="ew")
+        self.column_frame.grid_columnconfigure(0, weight=1)
+
+        columns = get_csv_columns(self.file_path)
+        self.column_dropdown = ctk.CTkComboBox(
+            self.column_frame,
+            values=columns if columns else ["No columns found"],
+            width=300
+        )
+        self.column_dropdown.grid(row=0, column=0, padx=20, pady=10)
+        if not columns:
+            self.column_dropdown.set("No columns found")
+            self.column_dropdown.configure(state="disabled")
+        else:
+            self.column_dropdown.set(columns[0])
+
+        # --- Action Buttons ---
+        self.action_frame = ctk.CTkFrame(self)
+        self.action_frame.grid(row=2, column=0, padx=20, pady=20, sticky="s")
+        self.action_frame.grid_columnconfigure((0, 1), weight=1)
+
+        self.confirm_button = ctk.CTkButton(
+            self.action_frame,
+            text="Confirm Selection",
+            command=self.confirm_column_selection,
+            state="normal" if columns else "disabled"
+        )
+        self.confirm_button.grid(row=0, column=0, padx=10, pady=10)
+
+        self.cancel_button = ctk.CTkButton(
+            self.action_frame,
+            text="Cancel",
+            command=self.close_window
+        )
+        self.cancel_button.grid(row=0, column=1, padx=10, pady=10)
+
+    def confirm_column_selection(self):
+        """
+        Handles the confirmation of the column selection.
+        """
+        selected_column = self.column_dropdown.get()
+        if selected_column and selected_column != "No columns found":
+            self.selected_column_data = get_column_data(self.file_path, selected_column)
+            if self.selected_column_data is not None:
+                messagebox.showinfo("Success", f"Successfully extracted {len(self.selected_column_data)} matric numbers from '{selected_column}'.")
+                # You can now use self.selected_column_data in other parts of the app
+                print(self.selected_column_data) # For debugging
+                self.close_window()
+            else:
+                messagebox.showerror("Error", f"Could not retrieve data for column '{selected_column}'.")
+        else:
+            messagebox.showwarning("Warning", "Please select a valid column.")
     
     def save_changes(self):
         """
@@ -221,7 +303,7 @@ class ViewerWindow(ctk.CTkToplevel):
         self.master.deiconify()
         
         super().destroy()
-       
-        
+
+
 
 

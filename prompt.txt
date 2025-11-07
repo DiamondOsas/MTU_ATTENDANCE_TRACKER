@@ -1,4 +1,3 @@
-
 This is a attendace tracker project
 Use simple code jnr dev can understand
 Comment so as it is easy to read the code
@@ -7,10 +6,8 @@ The appliaction should be acessed form main.py
 
 
 TASK
-Make a gui in addgui.py
-
-It should be a selcetion menu where one will choose which csv in db/attendace the user wants to choose
-It then tell drpodown to tell the user to choose types of programs just put mornin and evening but ssturcture it in such a eway that i can easiyl add more to that dropdown men please signify it in th code
-It should also have a button to then load a csv file (No fucntionality yet)
-
-The logic of this code sshould be done in attendance.py
+So now in the gui of add atenadce one should be able to also selct date using soemthing like a calender kind of stuff use like a gui library or just create it so that one can select the date it should be in the format 26/05/12Also the load csv should be another lne entirley form the add attendace button 
+Also when the add attendace is clicked it should do this 
+1. Put the date collected in the addgui in the row where date is in a new column after the studednts data
+2. Put the program type in the  Acitvity column after the data of the students 
+3. Then check the matric number 

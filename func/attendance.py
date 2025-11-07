@@ -2,6 +2,7 @@ import os
 import shutil
 import glob
 import csv
+from tkinter import filedialog
 
 def prepare_attendance_files():
     """
@@ -68,6 +69,51 @@ def prepare_attendance_files():
         except Exception as e:
             # Print an error message if a file can't be processed.
             print(f"Error processing file {source_file_path}: {e}")
+
+def get_attendance_files():
+    """
+    Retrieves a list of all CSV file names from the 'db/attendance' directory.
+
+    Returns:
+        list: A list of strings, where each string is the basename of a CSV file.
+              Returns an empty list if the directory doesn't exist or contains no CSV files.
+    """
+    # Define the path to the attendance directory.
+    attendance_dir = os.path.join("db", "attendance")
+
+    # Check if the directory exists.
+    if not os.path.isdir(attendance_dir):
+        print(f"Directory not found: {attendance_dir}")
+        return []
+
+    # Find all files ending with .csv in the directory.
+    try:
+        # Use glob to find all files matching the pattern "*.csv".
+        csv_files = glob.glob(os.path.join(attendance_dir, "*.csv"))
+        
+        # Use a list comprehension to extract just the file names (basenames).
+        # e.g., from "db/attendance/100level.csv" to "100level.csv"
+        file_names = [os.path.basename(f) for f in csv_files]
+        
+        return file_names
+    except Exception as e:
+        # Print an error if something goes wrong during file searching.
+        print(f"An error occurred while searching for attendance files: {e}")
+        return []
+
+def load_csv_file():
+    """
+    Opens a file dialog for the user to select a CSV file.
+
+    Returns:
+        str: The path to the selected CSV file, or None if no file is chosen.
+    """
+    # Ask the user to select a file, defaulting to CSV files.
+    file_path = filedialog.askopenfilename(
+        title="Select a CSV file",
+        filetypes=[("CSV files", "*.csv"), ("All files", "*.*")]
+    )
+    return file_path
 
 if __name__ == '__main__':
     # This block allows you to test the function directly by running this script.
