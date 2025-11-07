@@ -63,13 +63,13 @@ class AddAttendanceWindow(ctk.CTkToplevel):
         self.program_frame.grid(row=2, column=0, padx=20, pady=10, sticky="ew")
         self.program_frame.grid_columnconfigure(0, weight=1)
 
-        self.select_program_label = ctk.CTkLabel(self.program_frame, text="Choose Program Type:")
+        self.select_program_label = ctk.CTkLabel(self.program_frame, text="Choose Program Type: ")
         self.select_program_label.grid(row=0, column=0, padx=20, pady=(10, 5))
 
         # --- Easily modifiable list of programs ---
         # To add more options, just add a new string to this list.
         # For example: ["Morning", "Evening", "Special Program", "Mid-week Service"]
-        self.program_types = ["MORNING", "EVENING", "MANNA WATER", "PMCH", "MTU PRAYS", "SPECIAL SERVICE"]
+        self.program_types = ["MORNING SERVICE", "EVENING SERVICE", "MANNA WATER", "PMCH", "MTU PRAYS", "SPECIAL SERVICE"]
 
         self.program_dropdown = ctk.CTkComboBox(
             self.program_frame,

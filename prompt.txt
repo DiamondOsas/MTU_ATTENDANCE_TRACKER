@@ -2,12 +2,21 @@ This is a attendace tracker project
 Use simple code jnr dev can understand
 Comment so as it is easy to read the code
 Comment on places one can esaily change to other values so that one can easily do that 
-The appliaction should be acessed form main.py
+The appliaction should be acessed from main.py
 
 
 TASK
 So now in the gui of add atenadce one should be able to also selct date using soemthing like a calender kind of stuff use like a gui library or just create it so that one can select the date it should be in the format 26/05/12Also the load csv should be another lne entirley form the add attendace button 
 Also when the add attendace is clicked it should do this 
 1. Put the date collected in the addgui in the row where date is in a new column after the studednts data
-2. Put the program type in the  Acitvity column after the data of the students 
-3. Then check the matric number 
+2. Put the program type in the Activity column after the data of the students 
+3. Then check the matric number that are extracted from thr csv and the one that is in the LevelAttendace sheet that is chosen and then it check whether matic number seen in the Attendace is seen in the extracted Matic No'seen
+
+This is an example of how i expect the thing to be; 
+Surname,Firstname,Matric NO,Chapel Seat
+
+DATE,,,,09/01/25,10/02/25,12/03/25
+ACTIVITY,,,,PMCH,MANNA WATER,MORNING
+
+Osazuwa,Diamond,24010306018,3/26,✅,❎,✅
+Agu,Victor,24010305013,6/13,❎,✅,✅
