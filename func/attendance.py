@@ -3,6 +3,7 @@ import shutil
 import glob
 import csv
 from tkinter import filedialog
+import pandas as pd
 
 def prepare_attendance_files():
     """
@@ -114,6 +115,59 @@ def load_csv_file():
         filetypes=[("CSV files", "*.csv"), ("All files", "*.*")]
     )
     return file_path
+
+def update_attendance_sheet(attendance_file_name, program_type, date, external_csv_path):
+    """
+    Updates the selected attendance sheet with the new date, program type, and marks attendance
+    based on matric numbers from an external CSV file.
+
+    Args:
+        attendance_file_name (str): The name of the attendance CSV file (e.g., "100level.csv").
+        program_type (str): The type of program (e.g., "MORNING SERVICE").
+        date (str): The date of the attendance in "dd/mm/yy" format.
+        external_csv_path (str): The absolute path to the external CSV file containing matric numbers.
+    """
+    attendance_file_path = os.path.join("db", "attendance", attendance_file_name)
+
+    if not os.path.exists(attendance_file_path):
+        print(f"Error: Attendance file not found at {attendance_file_path}")
+        return
+
+    if not os.path.exists(external_csv_path):
+        print(f"Error: External CSV file not found at {external_csv_path}")
+        return
+
+    try:
+        # Load the attendance sheet
+        attendance_df = pd.read_csv(attendance_file_path, header=[0, 2, 3]) # Read main header, DATE, ACTIVITY
+
+        # Load matric numbers from the external CSV
+        external_df = pd.read_csv(external_csv_path)
+        # Assuming the external CSV has a column named 'Matric No' or similar
+        # You might need to adjust this based on the actual column name in the external CSV
+        extracted_matric_numbers = external_df['Matric No'].dropna().unique().tolist()
+
+        # Find the row indices for DATE and ACTIVITY
+        date_row_index = attendance_df.index[attendance_df.iloc[:, 0] == 'DATE'].tolist()[0]
+        activity_row_index = attendance_df.index[attendance_df.iloc[:, 0] == 'ACTIVITY'].tolist()[0]
+
+        # Add the new date and program type
+        attendance_df.loc[date_row_index, date] = date
+        attendance_df.loc[activity_row_index, date] = program_type
+
+        # Mark attendance
+        for index, row in attendance_df.iterrows():
+            if row['Matric NO'] in extracted_matric_numbers:
+                attendance_df.loc[index, date] = '✅'
+            else:
+                attendance_df.loc[index, date] = '❎'
+
+        # Save the updated attendance sheet
+        attendance_df.to_csv(attendance_file_path, index=False)
+        print(f"Attendance updated successfully for {attendance_file_name} on {date}.")
+
+    except Exception as e:
+        print(f"An error occurred while updating attendance: {e}")
 
 if __name__ == '__main__':
     # This block allows you to test the function directly by running this script.
