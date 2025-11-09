@@ -138,32 +138,110 @@ def update_attendance_sheet(attendance_file_name, program_type, date, external_c
         return
 
     try:
-        # Load the attendance sheet
-        attendance_df = pd.read_csv(attendance_file_path, header=[0, 2, 3]) # Read main header, DATE, ACTIVITY
-
+        # Read the attendance file as a regular CSV first to understand its structure
+        with open(attendance_file_path, 'r', newline='', encoding='utf-8') as file:
+            reader = csv.reader(file)
+            lines = list(reader)
+        
+        # Find the DATE and ACTIVITY rows
+        date_row_index = None
+        activity_row_index = None
+        student_data_start_index = None
+        
+        for i, line in enumerate(lines):
+            if line and line[0] == 'DATE':
+                date_row_index = i
+            elif line and line[0] == 'ACTIVITY':
+                activity_row_index = i
+            elif date_row_index is not None and activity_row_index is not None and line and line[0] != '' and line[0] != 'DATE' and line[0] != 'ACTIVITY':
+                # This is where student data starts
+                student_data_start_index = i
+                break
+        
+        # If DATE row doesn't exist, create it after the header
+        if date_row_index is None:
+            # Find the header row (first non-empty row)
+            header_index = 0
+            for i, line in enumerate(lines):
+                if line and len(line) > 0 and line[0] != '':
+                    header_index = i
+                    break
+            
+            # Insert DATE row after header and a blank row
+            lines.insert(header_index + 1, [])
+            lines.insert(header_index + 2, ['DATE'])
+            date_row_index = header_index + 2
+            activity_row_index = None  # Reset to find new position
+            student_data_start_index = None  # Reset to find new position
+        
+        # If ACTIVITY row doesn't exist, create it after the DATE row
+        if activity_row_index is None:
+            # Insert ACTIVITY row after DATE row
+            lines.insert(date_row_index + 1, ['ACTIVITY'])
+            activity_row_index = date_row_index + 1
+            student_data_start_index = None  # Reset to find new position
+        
+        # Find student data start index if not already found
+        if student_data_start_index is None:
+            for i in range(max(date_row_index, activity_row_index) + 1, len(lines)):
+                if lines[i] and len(lines[i]) > 0 and lines[i][0] != '' and lines[i][0] != 'DATE' and lines[i][0] != 'ACTIVITY':
+                    student_data_start_index = i
+                    break
+        
+        # If still no student data found, start adding after ACTIVITY row
+        if student_data_start_index is None:
+            student_data_start_index = activity_row_index + 1
+            # Add a blank row for spacing if not already there
+            if student_data_start_index >= len(lines) or (len(lines[student_data_start_index]) > 0 and lines[student_data_start_index][0] != ''):
+                lines.insert(student_data_start_index, [])
+                student_data_start_index += 1
+        
         # Load matric numbers from the external CSV
         external_df = pd.read_csv(external_csv_path)
-        # Assuming the external CSV has a column named 'Matric No' or similar
-        # You might need to adjust this based on the actual column name in the external CSV
-        extracted_matric_numbers = external_df['Matric No'].dropna().unique().tolist()
-
-        # Find the row indices for DATE and ACTIVITY
-        date_row_index = attendance_df.index[attendance_df.iloc[:, 0] == 'DATE'].tolist()[0]
-        activity_row_index = attendance_df.index[attendance_df.iloc[:, 0] == 'ACTIVITY'].tolist()[0]
-
-        # Add the new date and program type
-        attendance_df.loc[date_row_index, date] = date
-        attendance_df.loc[activity_row_index, date] = program_type
-
-        # Mark attendance
-        for index, row in attendance_df.iterrows():
-            if row['Matric NO'] in extracted_matric_numbers:
-                attendance_df.loc[index, date] = '✅'
+        
+        # Try to find the matric number column (common names)
+        matric_column = None
+        possible_names = ['Matric No', 'Matric NO', 'Matric Number', 'Matric', 'Registration Number']
+        
+        for col in external_df.columns:
+            if col in possible_names:
+                matric_column = col
+                break
+        
+        if matric_column is None:
+            print("Error: Could not find matric number column in external CSV. Expected column names: 'Matric No', 'Matric NO', 'Matric Number', 'Matric', 'Registration Number'")
+            return
+        
+        extracted_matric_numbers = external_df[matric_column].dropna().astype(str).unique().tolist()
+        
+        # Add the new date column to DATE and ACTIVITY rows if it doesn't exist
+        # First, ensure all rows have the same number of columns
+        max_cols = max(len(line) for line in lines)
+        for i, line in enumerate(lines):
+            if len(line) < max_cols:
+                lines[i].extend([''] * (max_cols - len(line)))
+        
+        # Add the new date column to DATE and ACTIVITY rows
+        lines[date_row_index].append(date)
+        lines[activity_row_index].append(program_type)
+        
+        # Mark attendance for each student
+        for i in range(student_data_start_index, len(lines)):
+            if i < len(lines) and len(lines[i]) >= 3:  # Ensure we have at least 3 columns (Surname, Firstname, Matric NO)
+                matric_no = str(lines[i][2]).strip()  # Matric NO is at index 2
+                if matric_no in extracted_matric_numbers:
+                    lines[i].append('✓')
+                else:
+                    lines[i].append('✗')
             else:
-                attendance_df.loc[index, date] = '❎'
-
-        # Save the updated attendance sheet
-        attendance_df.to_csv(attendance_file_path, index=False)
+                # If this row doesn't have enough columns, add an empty cell
+                lines[i].append('')
+        
+        # Write the updated data back to the file
+        with open(attendance_file_path, 'w', newline='', encoding='utf-8') as file:
+            writer = csv.writer(file)
+            writer.writerows(lines)
+        
         print(f"Attendance updated successfully for {attendance_file_name} on {date}.")
 
     except Exception as e:

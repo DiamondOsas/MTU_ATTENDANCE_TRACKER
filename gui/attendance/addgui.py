@@ -2,7 +2,6 @@ import customtkinter as ctk
 from tkinter import messagebox
 import os
 import sys
-# from tkcalendar import Calendar # Removed tkcalendar import
 from datetime import date, timedelta, datetime
 
 # Add the parent directory to the path so we can import from the func module
@@ -10,6 +9,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
 from func.attendance import get_attendance_files, load_csv_file, update_attendance_sheet
 from gui.viewergui import ViewerWindow
+from gui.calendergui import CalendarDialog
 
 class AddAttendanceWindow(ctk.CTkToplevel):
     """
@@ -85,7 +85,7 @@ class AddAttendanceWindow(ctk.CTkToplevel):
         # --- 4.5 Date Selection (Custom Calendar) ---
         self.date_frame = ctk.CTkFrame(self)
         self.date_frame.grid(row=3, column=0, padx=20, pady=10, sticky="ew")
-        self.date_frame.grid_columnconfigure((0, 1, 2), weight=1)
+        self.date_frame.grid_columnconfigure((0, 1, 2, 3), weight=1)
 
         self.date_label = ctk.CTkLabel(self.date_frame, text="Select Date:")
         self.date_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
@@ -95,11 +95,14 @@ class AddAttendanceWindow(ctk.CTkToplevel):
         self.date_entry.insert(0, self.selected_date)
         self.date_entry.bind("<FocusOut>", self.validate_date_entry)
 
+        self.calendar_button = ctk.CTkButton(self.date_frame, text="📅", width=30, command=self.open_calendar)
+        self.calendar_button.grid(row=0, column=2, padx=(2, 5), pady=5, sticky="e")
+
         self.prev_day_button = ctk.CTkButton(self.date_frame, text="<", width=30, command=lambda: self.adjust_date(-1))
-        self.prev_day_button.grid(row=0, column=2, padx=(5, 2), pady=5, sticky="w")
+        self.prev_day_button.grid(row=0, column=3, padx=(5, 2), pady=5, sticky="w")
 
         self.next_day_button = ctk.CTkButton(self.date_frame, text=">", width=30, command=lambda: self.adjust_date(1))
-        self.next_day_button.grid(row=0, column=3, padx=(2, 5), pady=5, sticky="e")
+        self.next_day_button.grid(row=0, column=4, padx=(2, 5), pady=5, sticky="e")
 
         # --- 5. Action Buttons ---
         self.button_frame = ctk.CTkFrame(self)
@@ -152,9 +155,20 @@ class AddAttendanceWindow(ctk.CTkToplevel):
         """
         current_date = datetime.strptime(self.selected_date, '%d/%m/%y').date()
         new_date = current_date + timedelta(days=delta)
-        self.selected_date = new_date.strftime('%d/%m/%yy')
+        self.selected_date = new_date.strftime('%d/%m/%y')
         self.date_entry.delete(0, ctk.END)
         self.date_entry.insert(0, self.selected_date)
+
+    def open_calendar(self):
+        """
+        Opens a calendar dialog to select a date.
+        """
+        calendar_dialog = CalendarDialog(self, self.selected_date)
+        self.wait_window(calendar_dialog)  # Wait for the calendar dialog to close
+        if calendar_dialog.selected_date:
+            self.selected_date = calendar_dialog.selected_date.strftime('%d/%m/%y')
+            self.date_entry.delete(0, ctk.END)
+            self.date_entry.insert(0, self.selected_date)
 
     def load_csv_file_handler(self):
         """
@@ -166,6 +180,9 @@ class AddAttendanceWindow(ctk.CTkToplevel):
             self.loaded_csv_path = file_path
             file_name = os.path.basename(file_path)
             self.loaded_file_label.configure(text=f"Loaded: {file_name}")
+            
+            # Enable the Add Attendance button since we now have a CSV file
+            self.add_attendance_button.configure(state="normal")
             
             # Open the viewer window immediately after loading the file
             self.open_viewer_for_column_selection()
@@ -216,6 +233,7 @@ class AddAttendanceWindow(ctk.CTkToplevel):
         """
         self.parent.deiconify()
         self.destroy()
+
 
 if __name__ == '__main__':
     # This allows you to run and test this GUI file directly.
