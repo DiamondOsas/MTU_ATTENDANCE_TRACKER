@@ -6,21 +6,4 @@ The appliaction should be acessed from main.py
 
 
 TASK
-When i click the print asbsenttes modules this should happen
-
-Look inside db/attendnce and the applcaition should show a gui in absenttes/choose.py then the user should choose the csv file he/she wants to print attendace for
-
-Then onnce chosen the user will then choose the date and the activity of that date that is present in the csv file
-Then  the users  that are marked in red emoji absent all their details will be extracted 
-hen it will ask the user the location he/she wants to save the file
-
-e.g
-Surname,Firstname,Matric NO,Chapel Seat,
-,,,,
-DATE,,,,20/11/25,21/11/25
-ACTIVITY,,,,EVENING SERVICE,PMCH
-,,,,
-Osazuwa,Diamond,24010306018,3/26,✗,✓
-Agu,Victor,24010305013,6/13,✓,✗
-
-If 20/11/2 is chosen Osazuwa diamond details ould be printed out in the outgoing csv file because he is absent
+main.py

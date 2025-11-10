@@ -7,12 +7,12 @@ import pandas as pd
 
 def prepare_attendance_files():
     """
-    Processes student list CSV files from 'db/allstudents' and creates
+    Processes student list CSV files from 'db/allstudents' and creates or updates
     formatted attendance sheets in 'db/attendance'.
 
-    For each generated file, it adds a specific header, fields for DATE and
-    ACTIVITY, and then populates the student data by extracting and reordering
-    columns from the source file.
+    If an attendance file doesn't exist, it's created with a header and student data.
+    If it exists, new students from the source file are appended without
+    deleting existing records or attendance marks.
 
     ASSUMPTION: The source CSV files in 'db/allstudents' are expected to have
     the following column structure:
@@ -21,54 +21,65 @@ def prepare_attendance_files():
     - Column 3 (index 2): Firstname
     - Column 5 (index 4): Chapel Seat
     """
-    # Define the source and destination directories.
     source_dir = os.path.join("db", "allstudents")
     destination_dir = os.path.join("db", "attendance")
-
-    # Create the destination directory if it doesn't already exist.
     os.makedirs(destination_dir, exist_ok=True)
 
-    # Find all .csv files in the source directory.
     student_lists = glob.glob(os.path.join(source_dir, "*.csv"))
 
-    # Loop through each source CSV file to process it.
     for source_file_path in student_lists:
         file_name = os.path.basename(source_file_path)
         destination_file_path = os.path.join(destination_dir, file_name)
 
         try:
-            # Open the source file for reading and destination file for writing.
-            with open(source_file_path, mode='r', newline='', encoding='utf-8') as infile, \
-                 open(destination_file_path, mode='w', newline='', encoding='utf-8') as outfile:
-
+            # --- Read source students ---
+            with open(source_file_path, mode='r', newline='', encoding='utf-8') as infile:
                 reader = csv.reader(infile)
-                writer = csv.writer(outfile)
+                next(reader, None)  # Skip header
+                source_students = {tuple(row[:4]): row for row in reader if len(row) >= 4} # Use first 4 cols as key
 
-                # --- 1. Write the new header and metadata ---
-                # This is the main header for the attendance sheet.
-                writer.writerow(["Surname", "Firstname", "Matric NO", "Chapel Seat"])
-                writer.writerow([])  # Add a blank row for spacing.
-                writer.writerow(["DATE"])
-                writer.writerow(["ACTIVITY"])
-                writer.writerow([])  # Add another blank row for spacing.
+            # --- If destination file doesn't exist, create it ---
+            if not os.path.exists(destination_file_path):
+                with open(destination_file_path, mode='w', newline='', encoding='utf-8') as outfile:
+                    writer = csv.writer(outfile)
+                    writer.writerow(["Surname", "Firstname", "Matric NO", "Chapel Seat"])
+                    writer.writerow([])
+                    writer.writerow(["DATE"])
+                    writer.writerow(["ACTIVITY"])
+                    writer.writerow([])
+                    for student_row in source_students.values():
+                        writer.writerow(student_row)
+                print(f"Created new attendance sheet: {file_name}")
+                continue # Move to the next file
 
-
-                # --- 2. Write the student data ---
-                # Skip the header row of the source file to avoid duplicating it.
-                next(reader, None)
-
-                # Read each student's data and write it to the new file.
+            # --- If destination file exists, find and append new students ---
+            with open(destination_file_path, mode='r+', newline='', encoding='utf-8') as outfile:
+                # Read existing students to avoid duplicates
+                reader = csv.reader(outfile)
+                existing_students = set()
                 for row in reader:
-                    # Ensure the row has the 4 expected columns to prevent errors.
-                    if len(row) >= 4:
-                        # The columns are already in the correct order (Surname, Firstname, Matric, Seat),
-                        # so we can write the row directly.
-                        writer.writerow(row)
+                    if len(row) >= 3: # Matric number is at index 2
+                        existing_students.add(row[2].strip())
 
-            print(f"Generated formatted attendance sheet: {file_name}")
+                # Find students in source that are not in destination
+                new_students_to_add = []
+                for student_key, student_row in source_students.items():
+                    matric_no = student_row[2].strip()
+                    if matric_no not in existing_students:
+                        new_students_to_add.append(student_row)
+
+                # Append only the new students
+                if new_students_to_add:
+                    # We already read the file, so we need to reopen in append mode
+                    with open(destination_file_path, mode='a', newline='', encoding='utf-8') as append_file:
+                        writer = csv.writer(append_file)
+                        for student_row in new_students_to_add:
+                            writer.writerow(student_row)
+                    print(f"Appended {len(new_students_to_add)} new students to: {file_name}")
+                else:
+                    print(f"No new students to add to: {file_name}")
 
         except Exception as e:
-            # Print an error message if a file can't be processed.
             print(f"Error processing file {source_file_path}: {e}")
 
 def get_attendance_files():

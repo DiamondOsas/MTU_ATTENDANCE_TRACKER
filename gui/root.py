@@ -105,9 +105,11 @@ class AttendanceApp(ctk.CTk):
 
     def open_absentees_viewer_window(self):
         """
-        A placeholder for viewing absentees.
+        Closes the main menu and opens the window to choose an attendance file for absentee printing.
         """
-        self.placeholder_command()
+        self.withdraw()
+        from gui.absentees.choose import ChooseAbsenteeFileWindow
+        absentees_app = ChooseAbsenteeFileWindow(self)
 
     def placeholder_command(self):
         """
