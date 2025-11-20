@@ -41,7 +41,7 @@ class AttendanceApp(ctk.CTk):
         self.grid_columnconfigure(0, weight=1)
 
         # --- 2. Title Label ---
-        self.title_label = ctk.CTkLabel(self, text=" MTU Attendance Tracker", font=ctk.CTkFont(size=24, weight="bold"))
+        self.title_label = ctk.CTkLabel(self, text=" MTU Attendance Tracker Beta v0.0.1", font=ctk.CTkFont(size=24, weight="bold"))
         self.title_label.grid(row=1, column=0, padx=20, pady=20)
 
         # --- 3. Menu Buttons ---

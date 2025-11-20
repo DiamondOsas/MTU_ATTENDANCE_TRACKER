@@ -1,7 +1,50 @@
-<!doctype html>
-<title>Hello from Flask</title>
-{% if person %}
-  <h1>Hello {{ person }}!</h1>
-{% else %}
-  <h1>Hello, World!</h1>
-{% endif %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>MTU Exeat</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>MTU Exeat</h1>
+    <button id="newBtn">Create New Exeat</button>
+
+    <div id="formContainer" class="hidden">
+      <h2 id="formTitle">New Exeat</h2>
+      <form id="exeatForm">
+        <input type="hidden" id="exeatId" value="" />
+        <label>First Name:<br/><input type="text" id="first_name" required /></label><br/>
+        <label>Surname:<br/><input type="text" id="surname" required /></label><br/>
+        <label>Level:<br/>
+          <select id="level">
+            <option value="100">100</option>
+            <option value="200">200</option>
+            <option value="300">300</option>
+            <option value="400">400</option>
+            <option value="500">500</option>
+          </select>
+        </label><br/>
+        <label>Chapel Line:<br/><input type="number" id="chapel_line" required min="1"/></label><br/>
+        <label>Chapel Seat:<br/><input type="number" id="chapel_seat" required min="1"/></label><br/>
+        <label>Absent Start:<br/><input type="date" id="absent_start" required/></label><br/>
+        <label>Absent End (optional):<br/><input type="date" id="absent_end"/></label><br/>
+        <button type="submit" id="saveBtn">Save</button>
+        <button type="button" id="cancelBtn">Cancel</button>
+      </form>
+    </div>
+
+    <div id="listContainer">
+      <h2>Existing Exeats</h2>
+      <table id="exeatTable">
+        <thead>
+          <tr><th>ID</th><th>Name</th><th>Level</th><th>Chapel</th><th>Absent</th><th>Actions</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="/main.js"></script>
+</body>
+</html>

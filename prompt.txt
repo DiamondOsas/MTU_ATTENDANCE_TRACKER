@@ -6,4 +6,6 @@ The appliaction should be acessed from main.py
 
 
 TASK
-main.py
+In the viewer gui add a functionality such that the user can press ctrl + f to open find and then he/she can search for any thing  and then it brings it up it should have like a standard application fnd next previous and even a replcace functionality
+
+It should show somewhere in the coner that one can press ctrl + f to find 
