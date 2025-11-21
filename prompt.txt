@@ -6,9 +6,4 @@ The appliaction should be acessed from main.py
 
 
 TASK
-DO NOT DELELTE
- Make it in choosecsv gui that when View Attendace module is cliked it opens the correspoding csv file in db/attendace instea
-
-@choosescvgui
-@attendace/
-@func/ttendace.py
+Look through out the whole codebase an please remover te use of chapelseat in the recodinfg of all students and attendac e please there should not jsut be cahpel seat i beg
