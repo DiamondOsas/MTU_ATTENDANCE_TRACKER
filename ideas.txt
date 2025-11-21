@@ -1,0 +1,7 @@
+Make it such that there is a copy of the all students and attendace in the documnet folder that is an exact copy of the one in the database
+Also there is a folder that backups previous versions file form the yesterday and then saves it in teh temp folder
+Then for the exeat it has a button in the normal of the app to do studnet for exeat
+
+
+
+Also check the whole codebase for the logic for things and possible flaws in the code or better ways to implemet thtings that is more user friendly
