@@ -36,10 +36,32 @@ def get_all_students_files():
 def get_students_data_from_file(file_path):
     """
     Reads student data from a given file path.
+    This function is designed to be robust against malformed CSV files,
+    such as the attendance sheets which can have inconsistent column counts.
+    It attempts a fast read first, then falls back to a more flexible method
+    to prevent 'ParserError: Error tokenizing data'.
     """
-    if os.path.exists(file_path):
+    if not os.path.exists(file_path):
+        return pd.DataFrame()
+    
+    try:
+        # Try reading with the default, fast 'c' engine. This works for well-formed CSVs.
         return pd.read_csv(file_path)
-    return pd.DataFrame()
+    except (pd.errors.ParserError, ValueError) as e:
+        # If a ParserError occurs, it's likely due to ragged columns (inconsistent column counts),
+        # which is common in the attendance files as new dates are added.
+        print(f"Parsing with C engine failed: {e}. Falling back to Python engine.")
+        try:
+            # The 'python' engine is more flexible and can handle ragged CSVs
+            # when used with `header=None`. This will prevent the app from crashing.
+            # The viewer will display the data with default integer column headers.
+            return pd.read_csv(file_path, header=None, engine='python')
+        except Exception as fallback_e:
+            print(f"Critical: Fallback CSV reading with Python engine also failed for {file_path}: {fallback_e}")
+            return pd.DataFrame()
+    except Exception as general_e:
+        print(f"An unexpected error occurred while reading {file_path}: {general_e}")
+        return pd.DataFrame()
 
 def save_students_data(file_path, dataframe):
     """

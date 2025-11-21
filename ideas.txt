@@ -5,3 +5,5 @@ Then for the exeat it has a button in the normal of the app to do studnet for ex
 
 
 Also check the whole codebase for the logic for things and possible flaws in the code or better ways to implemet thtings that is more user friendly
+
+For the file maintiaer updated make sure that the files update in realtime even thought the applcaitions is oopen to make sure that the software is qualtiy
