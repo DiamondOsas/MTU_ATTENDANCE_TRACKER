@@ -25,7 +25,7 @@ class CalendarDialog(ctk.CTkToplevel):
         
         # Window configuration
         self.title("Select Date")
-        self.geometry("300x300")
+        self.geometry("400x400")
         self.resizable(False, False)
         
         # Make window modal
@@ -86,11 +86,11 @@ class CalendarDialog(ctk.CTkToplevel):
         
         # Today button
         today_btn = ctk.CTkButton(buttons_frame, text="Today", command=self.set_today)
-        today_btn.pack(side="left", padx=5)
+        today_btn.pack(side="left", padx=10)
         
         # OK button
         ok_btn = ctk.CTkButton(buttons_frame, text="OK", command=self.confirm_selection, fg_color="green")
-        ok_btn.pack(side="right", padx=5)
+        ok_btn.pack(side="right", padx=10)
         
         # Cancel button
         cancel_btn = ctk.CTkButton(buttons_frame, text="Cancel", command=self.destroy)

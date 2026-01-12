@@ -33,8 +33,6 @@ def create_exeat():
         first = data['first_name']
         surname = data['surname']
         level = int(data['level'])
-        line = int(data['chapel_line'])
-        seat = int(data['chapel_seat'])
         absent_start = data['absent_start']
         absent_end = data.get('absent_end', absent_start)
         # parse to ensure valid date
@@ -48,8 +46,6 @@ def create_exeat():
         "first_name": first,
         "surname": surname,
         "level": level,
-        "chapel_line": line,
-        "chapel_seat": seat,
         "absent_start": absent_start,
         "absent_end": absent_end
     }
@@ -66,8 +62,6 @@ def update_exeat(exeat_id):
             rec['first_name'] = data.get('first_name', rec['first_name'])
             rec['surname'] = data.get('surname', rec['surname'])
             rec['level'] = int(data.get('level', rec['level']))
-            rec['chapel_line'] = int(data.get('chapel_line', rec['chapel_line']))
-            rec['chapel_seat'] = int(data.get('chapel_seat', rec['chapel_seat']))
             rec['absent_start'] = data.get('absent_start', rec['absent_start'])
             rec['absent_end'] = data.get('absent_end', rec['absent_end'])
             return jsonify(rec)

@@ -30,8 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
       first_name: document.getElementById('first_name').value,
       surname: document.getElementById('surname').value,
       level: parseInt(document.getElementById('level').value, 10),
-      chapel_line: parseInt(document.getElementById('chapel_line').value, 10),
-      chapel_seat: parseInt(document.getElementById('chapel_seat').value, 10),
       absent_start: document.getElementById('absent_start').value,
       absent_end: document.getElementById('absent_end').value || document.getElementById('absent_start').value
     };
@@ -68,7 +66,6 @@ document.addEventListener('DOMContentLoaded', () => {
         <td>${rec.id}</td>
         <td>${rec.first_name} ${rec.surname}</td>
         <td>${rec.level}</td>
-        <td>Line ${rec.chapel_line}, Seat ${rec.chapel_seat}</td>
         <td>${rec.absent_start}${rec.absent_end && rec.absent_end !== rec.absent_start ? ' → '+rec.absent_end : ''}</td>
         <td>
           <button data-id="${rec.id}" class="editBtn">Edit</button>
@@ -91,8 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('first_name').value = rec.first_name;
         document.getElementById('surname').value = rec.surname;
         document.getElementById('level').value = rec.level;
-        document.getElementById('chapel_line').value = rec.chapel_line;
-        document.getElementById('chapel_seat').value = rec.chapel_seat;
         document.getElementById('absent_start').value = rec.absent_start;
         document.getElementById('absent_end').value = rec.absent_end;
         formContainer.classList.remove('hidden');

@@ -26,6 +26,7 @@ class AddAttendanceWindow(ctk.CTkToplevel):
         self.parent = parent
         self.loaded_csv_path = None # To store the path of the loaded CSV
         self.selected_date = date.today().strftime('%d/%m/%y') # To store the selected date, default to today
+        self.extracted_matric_numbers = None # To store extracted matric numbers from viewer
 
         # --- 1. Window Configuration ---
         self.title("Add Attendance")
@@ -95,14 +96,22 @@ class AddAttendanceWindow(ctk.CTkToplevel):
         self.date_entry.insert(0, self.selected_date)
         self.date_entry.bind("<FocusOut>", self.validate_date_entry)
 
+        # --- 4.5 Date Selection (Custom Calendar) ---
+        self.date_frame = ctk.CTkFrame(self)
+        self.date_frame.grid(row=3, column=0, padx=20, pady=10, sticky="ew")
+        # Adjusted column configure as we're removing prev/next day buttons
+        self.date_frame.grid_columnconfigure((0, 1, 2), weight=1) 
+
+        self.date_label = ctk.CTkLabel(self.date_frame, text="Select Date:")
+        self.date_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+
+        self.date_entry = ctk.CTkEntry(self.date_frame, width=120)
+        self.date_entry.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
+        self.date_entry.insert(0, self.selected_date)
+        self.date_entry.bind("<FocusOut>", self.validate_date_entry)
+
         self.calendar_button = ctk.CTkButton(self.date_frame, text="📅", width=30, command=self.open_calendar)
         self.calendar_button.grid(row=0, column=2, padx=(2, 5), pady=5, sticky="e")
-
-        self.prev_day_button = ctk.CTkButton(self.date_frame, text="<", width=30, command=lambda: self.adjust_date(-1))
-        self.prev_day_button.grid(row=0, column=3, padx=(5, 2), pady=5, sticky="w")
-
-        self.next_day_button = ctk.CTkButton(self.date_frame, text=">", width=30, command=lambda: self.adjust_date(1))
-        self.next_day_button.grid(row=0, column=4, padx=(2, 5), pady=5, sticky="e")
 
         # --- 5. Action Buttons ---
         self.button_frame = ctk.CTkFrame(self)
@@ -149,16 +158,6 @@ class AddAttendanceWindow(ctk.CTkToplevel):
             self.date_entry.insert(0, date.today().strftime('%d/%m/%y'))
             self.selected_date = date.today().strftime('%d/%m/%y')
 
-    def adjust_date(self, delta):
-        """
-        Adjusts the selected date by the given delta (number of days).
-        """
-        current_date = datetime.strptime(self.selected_date, '%d/%m/%y').date()
-        new_date = current_date + timedelta(days=delta)
-        self.selected_date = new_date.strftime('%d/%m/%y')
-        self.date_entry.delete(0, ctk.END)
-        self.date_entry.insert(0, self.selected_date)
-
     def open_calendar(self):
         """
         Opens a calendar dialog to select a date.
@@ -181,9 +180,6 @@ class AddAttendanceWindow(ctk.CTkToplevel):
             file_name = os.path.basename(file_path)
             self.loaded_file_label.configure(text=f"Loaded: {file_name}")
             
-            # Enable the Add Attendance button since we now have a CSV file
-            self.add_attendance_button.configure(state="normal")
-            
             # Open the viewer window immediately after loading the file
             self.open_viewer_for_column_selection()
 
@@ -192,23 +188,29 @@ class AddAttendanceWindow(ctk.CTkToplevel):
         Opens the ViewerWindow to allow the user to select the matric number column.
         """
         if self.loaded_csv_path:
+            # Reset previous data to prevent mixing data from different files
+            self.extracted_matric_numbers = None
+            self.add_attendance_button.configure(state="disabled")
+
             # Hide the current window
             self.withdraw()
             # Open the viewer window, passing the file path and a specific mode
-            viewer = ViewerWindow(self, self.loaded_csv_path, editable=False, mode="select_column")
-            viewer.protocol("WM_DELETE_WINDOW", self.on_viewer_close)
+            self.viewer = ViewerWindow(self, self.loaded_csv_path, editable=False, mode="select_column")
+            
+            # Wait for the window to close
+            self.wait_window(self.viewer)
+            
+            # After window closes, check if we have data
+            if hasattr(self.viewer, 'selected_column_data') and self.viewer.selected_column_data:
+                self.extracted_matric_numbers = self.viewer.selected_column_data
+                # Enable the Add Attendance button since we now have data
+                self.add_attendance_button.configure(state="normal")
+            else:
+                # If cancelled or no data, just ensure we are visible again
+                pass
 
-    def on_viewer_close(self):
-        """
-        Callback function for when the viewer window is closed.
-        """
-        # Show the AddAttendanceWindow again
-        self.deiconify()
-        self.add_attendance_button.configure(state="normal")
-        # You can add logic here to retrieve data from the viewer if needed
-        # For example: selected_column = viewer.selected_column
-        # For now, we just re-show the window.
-        print("Viewer closed, returning to Add Attendance.")
+            # Ensure this window is visible again
+            self.deiconify()
 
     def add_attendance_handler(self):
         """
@@ -224,7 +226,8 @@ class AddAttendanceWindow(ctk.CTkToplevel):
             return
 
         # Call the backend function to update the attendance sheet
-        update_attendance_sheet(attendance_file, program_type, date_to_add, external_csv)
+        # Now passing extracted_matric_numbers
+        update_attendance_sheet(attendance_file, program_type, date_to_add, external_csv, self.extracted_matric_numbers)
         messagebox.showinfo("Success", "Attendance updated successfully!")
 
     def close_window(self):

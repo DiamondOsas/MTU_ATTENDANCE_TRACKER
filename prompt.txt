@@ -5,5 +5,17 @@ Comment on places one can esaily change to other values so that one can easily d
 The appliaction should be acessed from main.py
 
 
+
 TASK
-Look through out the whole codebase an please remover te use of chapelseat in the recodinfg of all students and attendac e please there should not jsut be cahpel seat i beg
+In the file maintian add it that there will be a loder in the appdata roaming folder of the computer
+So there will be backup of file everyday
+
+It should be in this app data
+C:\Users\user\AppData\Roaming
+
+The user name shud be dynamic
+The anme of the Folder should be MTU_BACKUP
+So ti will contain all the db files in the root folder with a sjon file that will jut tell one the version backup
+New backu should be createad every new day
+
+Then in root.py create a button that one can just use to resotore to a previous version of  teh db files. This should be coded in revertdb

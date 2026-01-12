@@ -67,6 +67,9 @@ class AttendanceApp(ctk.CTk):
         self.settings_button = ctk.CTkButton(self, text="Settings", command=self.placeholder_command)
         self.settings_button.grid(row=7, column=0, padx=40, pady=10, sticky="ew")
 
+        self.restore_button = ctk.CTkButton(self, text="Restore Database Backup", command=self.open_revert_window, fg_color="#7743F2", hover_color="#B71C1C")
+        self.restore_button.grid(row=8, column=0, padx=40, pady=10, sticky="ew")
+
 
     def open_register_window(self):
         """
@@ -110,6 +113,14 @@ class AttendanceApp(ctk.CTk):
         self.withdraw()
         from gui.absentees.choose import ChooseAbsenteeFileWindow
         absentees_app = ChooseAbsenteeFileWindow(self)
+
+    def open_revert_window(self):
+        """
+        Closes the main menu and opens the database restore window.
+        """
+        self.withdraw()
+        from gui.revertdb import RevertDBWindow
+        revert_app = RevertDBWindow(self)
 
     def placeholder_command(self):
         """

@@ -17,8 +17,8 @@ class RegisterWindow(ctk.CTkToplevel):
 
         # --- 1. Window Configuration ---
         self.title("Register Students")
-        self.geometry("500x450")
-        self.minsize(400, 400)
+        self.geometry("500x350")
+        self.minsize(400, 350)
 
         # Center the content
         self.grid_columnconfigure(0, weight=1)
@@ -59,27 +59,8 @@ class RegisterWindow(ctk.CTkToplevel):
         self.level_menu = ctk.CTkOptionMenu(self.form_frame, values=["100", "200", "300", "400", "500"])
         self.level_menu.grid(row=3, column=1, padx=10, pady=5, sticky="ew")
 
-        # Chapel Seat
-        self.seat_label = ctk.CTkLabel(self.form_frame, text="Chapel Seat:")
-        self.seat_label.grid(row=4, column=0, padx=10, pady=5, sticky="w")
-        
-        self.seat_frame = ctk.CTkFrame(self.form_frame)
-        self.seat_frame.grid(row=4, column=1, padx=10, pady=5, sticky="ew")
-        self.seat_frame.grid_columnconfigure(1, weight=1)
-        self.seat_frame.grid_columnconfigure(3, weight=1)
-
-        self.line_label = ctk.CTkLabel(self.seat_frame, text="Line:")
-        self.line_label.grid(row=0, column=0, padx=5, pady=5)
-        self.line_entry = ctk.CTkEntry(self.seat_frame, placeholder_text="e.g., 2")
-        self.line_entry.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
-
-        self.seat_num_label = ctk.CTkLabel(self.seat_frame, text="Seat:")
-        self.seat_num_label.grid(row=0, column=2, padx=5, pady=5)
-        self.seat_num_entry = ctk.CTkEntry(self.seat_frame, placeholder_text="e.g., 23")
-        self.seat_num_entry.grid(row=0, column=3, padx=5, pady=5, sticky="ew")
-
         # --- Entry Navigation ---
-        self.entries = [self.surname_entry, self.name_entry, self.matric_entry, self.line_entry, self.seat_num_entry]
+        self.entries = [self.surname_entry, self.name_entry, self.matric_entry]
         for entry in self.entries:
             entry.bind("<Up>", self.navigate_entries)
             entry.bind("<Down>", self.navigate_entries)
@@ -123,10 +104,8 @@ class RegisterWindow(ctk.CTkToplevel):
         name = self.name_entry.get()
         matric_no = self.matric_entry.get()
         level = self.level_menu.get()
-        line = self.line_entry.get()
-        seat = self.seat_num_entry.get()
 
-        if not all([surname, name, matric_no, level, line, seat]):
+        if not all([surname, name, matric_no, level]):
             messagebox.showerror("Error", "All fields must be filled.")
             return
 
@@ -142,24 +121,12 @@ class RegisterWindow(ctk.CTkToplevel):
             messagebox.showerror("Error", "Matric number must contain only numbers.")
             return
 
-        if not line.isdigit():
-            messagebox.showerror("Error", "Line must contain only numbers.")
-            return
-
-        if not seat.isdigit():
-            messagebox.showerror("Error", "Seat must contain only numbers.")
-            return
-
-        chapel_seat = f"{line}/{seat}"
-
-        if register_student(surname, name, matric_no, level, chapel_seat):
+        if register_student(surname, name, matric_no, level):
             messagebox.showinfo("Success", f"Student {name} {surname} has been registered successfully.")
             # Clear the fields
             self.surname_entry.delete(0, 'end')
             self.name_entry.delete(0, 'end')
             self.matric_entry.delete(0, 'end')
-            self.line_entry.delete(0, 'end')
-            self.seat_num_entry.delete(0, 'end')
         else:
             messagebox.showerror("Error", f"A student with matric number {matric_no} already exists.")
 

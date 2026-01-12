@@ -19,7 +19,6 @@ def prepare_attendance_files():
     - Column 1 (index 0): Matric NO
     - Column 2 (index 1): Surname
     - Column 3 (index 2): Firstname
-    - Column 5 (index 4): Chapel Seat
     """
     source_dir = os.path.join("db", "allstudents")
     destination_dir = os.path.join("db", "attendance")
@@ -36,13 +35,13 @@ def prepare_attendance_files():
             with open(source_file_path, mode='r', newline='', encoding='utf-8') as infile:
                 reader = csv.reader(infile)
                 next(reader, None)  # Skip header
-                source_students = {tuple(row[:4]): row for row in reader if len(row) >= 4} # Use first 4 cols as key
+                source_students = {tuple(row[:3]): row for row in reader if len(row) >= 3} # Use first 3 cols as key
 
             # --- If destination file doesn't exist, create it ---
             if not os.path.exists(destination_file_path):
                 with open(destination_file_path, mode='w', newline='', encoding='utf-8') as outfile:
                     writer = csv.writer(outfile)
-                    writer.writerow(["Surname", "Firstname", "Matric NO", "Chapel Seat"])
+                    writer.writerow(["Surname", "Firstname", "Matric NO"])
                     writer.writerow([])
                     writer.writerow(["DATE"])
                     writer.writerow(["ACTIVITY"])
@@ -52,25 +51,59 @@ def prepare_attendance_files():
                 print(f"Created new attendance sheet: {file_name}")
                 continue # Move to the next file
 
-            # --- If destination file exists, find and append new students ---
-            with open(destination_file_path, mode='r+', newline='', encoding='utf-8') as outfile:
-                # Read existing students to avoid duplicates
-                reader = csv.reader(outfile)
-                existing_students = set()
-                for row in reader:
-                    if len(row) >= 3: # Matric number is at index 2
-                        existing_students.add(row[2].strip())
+            # --- If destination file exists, check structure and append new students ---
+            # We use 'r' to read everything first
+            with open(destination_file_path, mode='r', newline='', encoding='utf-8') as infile:
+                lines = list(csv.reader(infile))
 
-                # Find students in source that are not in destination
-                new_students_to_add = []
-                for student_key, student_row in source_students.items():
-                    matric_no = student_row[2].strip()
-                    if matric_no not in existing_students:
-                        new_students_to_add.append(student_row)
+            has_activity = False
+            existing_data_rows = []
+            existing_matric_nos = set()
 
-                # Append only the new students
+            for row in lines:
+                if not row: continue
+                # Check if ACTIVITY row is present
+                if row[0] == "ACTIVITY":
+                    has_activity = True
+                
+                # Collect valid student rows to preserve them and check for duplicates
+                # Exclude metadata rows: Header, DATE, ACTIVITY
+                # Student rows must have at least 3 columns. Matric NO is at index 2.
+                if len(row) >= 3 and row[0] != "DATE" and row[0] != "ACTIVITY" and row[2] != "Matric NO":
+                    existing_data_rows.append(row)
+                    existing_matric_nos.add(row[2].strip())
+
+            # Find students in source that are not in destination
+            new_students_to_add = []
+            for student_key, student_row in source_students.items():
+                matric_no = student_row[2].strip()
+                if matric_no not in existing_matric_nos:
+                    new_students_to_add.append(student_row)
+
+            # If ACTIVITY is missing, we must restructure the file to include it
+            if not has_activity:
+                print(f"Reformatting file to include ACTIVITY: {file_name}")
+                with open(destination_file_path, mode='w', newline='', encoding='utf-8') as outfile:
+                    writer = csv.writer(outfile)
+                    # Write standard structure
+                    writer.writerow(["Surname", "Firstname", "Matric NO"])
+                    writer.writerow([])
+                    writer.writerow(["DATE"])
+                    writer.writerow(["ACTIVITY"])
+                    writer.writerow([])
+                    
+                    # Write back existing student data (preserving any attendance marks)
+                    writer.writerows(existing_data_rows)
+                    
+                    # Write new students
+                    writer.writerows(new_students_to_add)
+                
                 if new_students_to_add:
-                    # We already read the file, so we need to reopen in append mode
+                    print(f"Also appended {len(new_students_to_add)} new students to: {file_name}")
+
+            else:
+                # File structure is good, just append new students if any
+                if new_students_to_add:
                     with open(destination_file_path, mode='a', newline='', encoding='utf-8') as append_file:
                         writer = csv.writer(append_file)
                         for student_row in new_students_to_add:
@@ -127,7 +160,7 @@ def load_csv_file():
     )
     return file_path
 
-def update_attendance_sheet(attendance_file_name, program_type, date, external_csv_path):
+def update_attendance_sheet(attendance_file_name, program_type, date, external_csv_path, matric_numbers_list=None):
     """
     Updates the selected attendance sheet with the new date, program type, and marks attendance
     based on matric numbers from an external CSV file.
@@ -137,6 +170,8 @@ def update_attendance_sheet(attendance_file_name, program_type, date, external_c
         program_type (str): The type of program (e.g., "MORNING SERVICE").
         date (str): The date of the attendance in "dd/mm/yy" format.
         external_csv_path (str): The absolute path to the external CSV file containing matric numbers.
+        matric_numbers_list (list, optional): A list of matric numbers extracted from the external file.
+                                              If provided, the function uses this list instead of reading the external file again.
     """
     attendance_file_path = os.path.join("db", "attendance", attendance_file_name)
 
@@ -144,7 +179,8 @@ def update_attendance_sheet(attendance_file_name, program_type, date, external_c
         print(f"Error: Attendance file not found at {attendance_file_path}")
         return
 
-    if not os.path.exists(external_csv_path):
+    # Only check for external CSV existence if we are not provided with the list directly
+    if matric_numbers_list is None and not os.path.exists(external_csv_path):
         print(f"Error: External CSV file not found at {external_csv_path}")
         return
 
@@ -207,23 +243,43 @@ def update_attendance_sheet(attendance_file_name, program_type, date, external_c
                 lines.insert(student_data_start_index, [])
                 student_data_start_index += 1
         
-        # Load matric numbers from the external CSV
-        external_df = pd.read_csv(external_csv_path)
+        extracted_matric_numbers = []
         
-        # Try to find the matric number column (common names)
-        matric_column = None
-        possible_names = ['Matric No', 'Matric NO', 'Matric Number', 'Matric', 'Registration Number']
-        
-        for col in external_df.columns:
-            if col in possible_names:
-                matric_column = col
-                break
-        
-        if matric_column is None:
-            print("Error: Could not find matric number column in external CSV. Expected column names: 'Matric No', 'Matric NO', 'Matric Number', 'Matric', 'Registration Number'")
-            return
-        
-        extracted_matric_numbers = external_df[matric_column].dropna().astype(str).unique().tolist()
+        if matric_numbers_list is not None:
+            # Use the provided list
+            extracted_matric_numbers = [str(x).strip() for x in matric_numbers_list]
+        else:
+            # Load matric numbers from the external CSV
+            external_df = pd.read_csv(external_csv_path)
+            
+            # Try to find the matric number column
+            matric_column = None
+            
+            # 1. Try to find by common header names
+            possible_names = ['Matric No', 'Matric NO', 'Matric Number', 'Matric', 'Registration Number']
+            for col in external_df.columns:
+                if col in possible_names:
+                    matric_column = col
+                    break
+            
+            # 2. If not found, try to find by content (numeric)
+            if matric_column is None:
+                print("Matric column name not found, checking for numeric data...")
+                for col in external_df.columns:
+                    # Get non-empty values
+                    sample_data = external_df[col].dropna()
+                    if len(sample_data) > 0:
+                        # Check if values look like digits (matric numbers)
+                        if all(str(val).strip().isdigit() for val in sample_data):
+                             matric_column = col
+                             print(f"Auto-detected matric column by data: '{col}'")
+                             break
+
+            if matric_column is None:
+                print("Error: Could not find matric number column. Checked names and numeric content.")
+                return
+            
+            extracted_matric_numbers = external_df[matric_column].dropna().astype(str).unique().tolist()
         
         # Add the new date column to DATE and ACTIVITY rows if it doesn't exist
         # First, ensure all rows have the same number of columns

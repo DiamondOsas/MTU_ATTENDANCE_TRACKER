@@ -1,193 +1,237 @@
 import customtkinter as ctk
-import pandas as pd
+from tkinter import filedialog # Import filedialog for saving files
+from func.absentees import get_session_info, extract_absentees, save_absentees
 import os
-from func.absentees import extract_absentees # Assuming this function will be created here
-import csv
+
 class PrintAbsenteesWindow(ctk.CTkToplevel):
     """
-    A window that allows the user to select a date and activity from a chosen
-    attendance CSV file and then extract and save absentee records.
+    This class creates a new top-level window for viewing absentee reports.
+    It allows users to select a date and an activity from a chosen attendance
+    CSV file and then displays a list of students who were marked as absent
+    for that specific session.
+
+    It integrates with functions from 'func.absentees' to process the CSV data.
     """
     def __init__(self, master, file_path):
+        """
+        Initializes the PrintAbsenteesWindow.
+
+        Args:
+            master (ctk.CTk | ctk.CTkFrame): The parent window (master) of this Toplevel window.
+                                             This is usually the main application window.
+            file_path (str): The full path to the attendance CSV file selected by the user.
+        """
         super().__init__(master)
-        self.master = master
-        self.file_path = file_path
-        self.title(f"Extract Absentees from {os.path.basename(file_path)}")
-        self.geometry("500x400")
-        self.grab_set() # Make this window modal
+        self.master = master # Store the reference to the parent window
+        self.file_path = file_path # Store the path to the CSV file
+        self.title("View Absentees") # Set the window title
+        
+        # Store current absentee data for export
+        self.current_absentees = []
+        
+        # --- Customizable Settings ---
+        # Junior developer: You can easily change the window size here.
+        # Format: "WIDTHxHEIGHT" (e.g., "600x700")
+        self.geometry("500x650") # Increased height slightly for the new button
+        
+        # Junior developer: You can change the font styles for labels and titles here.
+        # ctk.CTkFont(size=FONT_SIZE, weight="bold" or "normal")
+        title_font = ctk.CTkFont(size=20, weight="bold") 
+        label_font = ctk.CTkFont(size=14) 
+        # -----------------------------
 
-        # Configure grid layout
-        self.grid_rowconfigure((0, 6), weight=1)
-        self.grid_columnconfigure(0, weight=1)
+        # Configure the grid layout for the window.
+        # This makes the widgets expand nicely when the window is resized.
+        self.grid_columnconfigure(0, weight=1) # The single column will expand horizontally
+        # The 7th row (index 7) is for the textbox_result, allowing it to expand vertically.
+        self.grid_rowconfigure(7, weight=1) 
+        
+        # Load attendance data from the CSV file.
+        # get_session_info is a helper function from 'func/absentees.py'.
+        # It parses the CSV and returns a dictionary where keys are dates
+        # and values are lists of activities with their corresponding column indices.
+        # Example: {'26/11/25': [{'activity': 'MANNA WATER', 'col_index': 3}, ...]}
+        self.sessions = get_session_info(self.file_path)
+        # Extract all unique dates available in the attendance file.
+        self.dates = list(self.sessions.keys())
+        
+        # --- GUI Elements ---
 
-        self.data = self._load_attendance_data()
-        if self.data is None:
-            ctk.CTkLabel(self, text="Error loading attendance data.").grid(row=1, column=0, padx=20, pady=10)
-            self.close_button = ctk.CTkButton(self, text="Close", command=self.destroy)
-            self.close_button.grid(row=2, column=0, padx=20, pady=10)
+        # 1. Title Label
+        # Displays the main title for the absentee report.
+        self.label_title = ctk.CTkLabel(self, text="Absentees Report", font=title_font)
+        self.label_title.grid(row=0, column=0, padx=20, pady=(20, 10))
+
+        # Check if any valid attendance data was found in the file.
+        # If not, display an error message and exit the window initialization.
+        if not self.dates:
+            self.error_label = ctk.CTkLabel(self, text="No attendance data found in this file.", text_color="red")
+            self.error_label.grid(row=1, column=0, padx=20, pady=20)
+            # Junior developer: You might want to add a close button here if no data is found.
             return
 
-        self.dates, self.activities = self._extract_dates_and_activities()
+        # 2. Date Selection Dropdown
+        # Label for the date selection dropdown.
+        self.label_date = ctk.CTkLabel(self, text="Select Date:", font=label_font)
+        self.label_date.grid(row=1, column=0, padx=20, pady=(10, 0), sticky="w")
+        
+        # ctk.StringVar is used to dynamically track the currently selected date.
+        # The initial value is set to the first date found in the CSV.
+        self.selected_date = ctk.StringVar(value=self.dates[0])
+        # The CTkOptionMenu widget provides a dropdown for date selection.
+        # When a date is chosen, 'update_activities' method is called to
+        # refresh the activity dropdown based on the new date.
+        self.option_date = ctk.CTkOptionMenu(self, values=self.dates, 
+                                             command=self.update_activities, 
+                                             variable=self.selected_date)
+        self.option_date.grid(row=2, column=0, padx=20, pady=(0, 10), sticky="ew")
+        
+        # 3. Activity Selection Dropdown
+        # Label for the activity selection dropdown.
+        self.label_activity = ctk.CTkLabel(self, text="Select Activity:", font=label_font)
+        self.label_activity.grid(row=3, column=0, padx=20, pady=(10, 0), sticky="w")
+        
+        # ctk.StringVar to track the selected activity.
+        self.selected_activity = ctk.StringVar()
+        # The CTkOptionMenu for activities. Its values will be updated
+        # whenever a new date is selected.
+        self.option_activity = ctk.CTkOptionMenu(self, variable=self.selected_activity)
+        self.option_activity.grid(row=4, column=0, padx=20, pady=(0, 10), sticky="ew")
+        
+        # Initially populate the activity dropdown based on the first selected date.
+        self.update_activities(self.dates[0])
+        
+        # 4. Action Button
+        # Button to trigger the display of absentees.
+        # When clicked, it calls the 'show_absentees' method.
+        self.btn_show = ctk.CTkButton(self, text="Show Absentees", command=self.show_absentees)
+        self.btn_show.grid(row=5, column=0, padx=20, pady=(20, 10))
 
-        # --- 1. Title Label ---
-        self.title_label = ctk.CTkLabel(self, text="Select Date and Activity", font=ctk.CTkFont(size=18, weight="bold"))
-        self.title_label.grid(row=1, column=0, padx=20, pady=10)
+        # 5. Export Button
+        # Button to export the absentee list to CSV or Excel.
+        # It is initially disabled and only enabled when absentees are found.
+        self.export_btn = ctk.CTkButton(self, text="Export to File", command=self.export_data, state="disabled")
+        self.export_btn.grid(row=6, column=0, padx=20, pady=(0, 20))
+        
+        # 6. Result Text Area
+        # A scrollable textbox to display the names of absent students.
+        self.textbox_result = ctk.CTkTextbox(self, width=400, height=300)
+        self.textbox_result.grid(row=7, column=0, padx=20, pady=(0, 20), sticky="nsew")
+        # Make the textbox read-only by default so users cannot type in it.
+        self.textbox_result.configure(state="disabled")
 
-        # --- 2. Date Selection ---
-        ctk.CTkLabel(self, text="Select Date:").grid(row=2, column=0, padx=20, pady=5, sticky="w")
-        self.selected_date_var = ctk.StringVar(value=self.dates[0] if self.dates else "")
-        self.date_optionmenu = ctk.CTkOptionMenu(self, values=self.dates,
-                                                 variable=self.selected_date_var)
-        self.date_optionmenu.grid(row=3, column=0, padx=20, pady=5, sticky="ew")
-
-        # --- 3. Activity Selection ---
-        ctk.CTkLabel(self, text="Select Activity:").grid(row=4, column=0, padx=20, pady=5, sticky="w")
-        self.selected_activity_var = ctk.StringVar(value=self.activities[0] if self.activities else "")
-        self.activity_optionmenu = ctk.CTkOptionMenu(self, values=self.activities,
-                                                     variable=self.selected_activity_var)
-        self.activity_optionmenu.grid(row=5, column=0, padx=20, pady=5, sticky="ew")
-
-        # --- 4. Extract Button ---
-        self.extract_button = ctk.CTkButton(self, text="Extract Absentees", command=self._on_extract_absentees)
-        self.extract_button.grid(row=6, column=0, padx=20, pady=20)
-
-        # Handle window close event
-        self.protocol("WM_DELETE_WINDOW", self._on_closing)
-
-    def _load_attendance_data(self):
+    def update_activities(self, date):
         """
-        Loads the attendance data from the specified CSV file into a pandas DataFrame.
-        Handles the specific format of the CSV with DATE and ACTIVITY rows and a
-        variable number of columns.
+        Updates the activity dropdown options based on the currently selected date.
+        This method is automatically called when the selected date in the
+        'option_date' dropdown changes.
+
+        Args:
+            date (str): The date string selected by the user from the date dropdown.
         """
-        try:
-            with open(self.file_path, 'r', newline='', encoding='utf-8') as f:
-                reader = csv.reader(f)
-                lines = list(reader)
-
-            header_row_index = -1
-            date_row_index = -1
-            activity_row_index = -1
-
-            for i, line in enumerate(lines):
-                if line and "Surname" in line[0]:
-                    header_row_index = i
-                elif line and line[0].startswith("DATE"):
-                    date_row_index = i
-                elif line and line[0].startswith("ACTIVITY"):
-                    activity_row_index = i
-
-            if header_row_index == -1 or date_row_index == -1 or activity_row_index == -1:
-                print("Error: Could not find header, DATE, or ACTIVITY rows in the CSV.")
-                return None
-
-            data_start_row = max(date_row_index, activity_row_index) + 1
-            while data_start_row < len(lines) and not lines[data_start_row]:
-                data_start_row += 1
-
-            # --- Construct Headers ---
-            fixed_headers = ["Surname", "Firstname", "Matric NO", "Chapel Seat"]
-            dates_line = lines[date_row_index]
-            activities_line = lines[activity_row_index]
-            dynamic_headers = []
-            for i in range(4, len(dates_line)):
-                date_val = dates_line[i].strip()
-                activity_val = activities_line[i].strip() if i < len(activities_line) else ""
-                if date_val and activity_val:
-                    dynamic_headers.append(f"{date_val} - {activity_val}")
-                elif date_val:
-                    dynamic_headers.append(date_val)
-                else:
-                    dynamic_headers.append(f"Unnamed_{i}")
-
-            full_headers = fixed_headers + dynamic_headers
-
-            # --- Load Data ---
-            student_data = lines[data_start_row:]
-            
-            # Pad rows to have the same number of columns as the header
-            for row in student_data:
-                while len(row) < len(full_headers):
-                    row.append('')
-
-            df = pd.DataFrame(student_data, columns=full_headers)
-            
-            return df
-        except Exception as e:
-            print(f"Error loading attendance data: {e}")
-            # Show a pop-up error message to the user
-            import customtkinter as ctk
-            from tkinter import messagebox
-            messagebox.showerror("Error", f"Failed to load attendance data.\n\nError: {e}\n\nPlease ensure the file is a valid CSV and not open in another program.")
-            return None
-
-    def _extract_dates_and_activities(self):
-        """
-        Extracts unique dates and activities from the DataFrame's columns.
-        Assumes columns are in "DATE - ACTIVITY" format or just "DATE".
-        """
-        dates = []
-        activities = []
-        for col in self.data.columns[4:]: # Iterate over dynamic columns
-            if " - " in col:
-                date_part, activity_part = col.split(" - ", 1)
-                dates.append(date_part.strip())
-                activities.append(activity_part.strip())
-            else:
-                # If only date is present, use it as both date and a generic activity
-                dates.append(col.strip())
-                activities.append("General Activity") # Placeholder for activity
-
-        return sorted(list(set(dates))), sorted(list(set(activities)))
-
-
-    def _on_extract_absentees(self):
-        """
-        Calls the absentee extraction logic and handles saving the output.
-        """
-        selected_date = self.selected_date_var.get()
-        selected_activity = self.selected_activity_var.get()
-
-        if not selected_date or not selected_activity:
-            ctk.CTkMessagebox.showerror("Error", "Please select both a date and an activity.")
-            return
-
-        # Call the function from func.absentees to get the absentee DataFrame
-        absentee_df = extract_absentees(self.data, selected_date, selected_activity)
-
-        if absentee_df is not None and not absentee_df.empty:
-            # Prompt user to save the file
-            self._save_absentee_file(absentee_df)
+        # Retrieve the list of activity dictionaries for the chosen date.
+        # Example: [{'activity': 'MANNA WATER', 'col_index': 3}]
+        specific_activities = self.sessions.get(date, [])
+        
+        # Extract just the 'activity' names from the list of dictionaries.
+        activity_names = [item['activity'] for item in specific_activities]
+        
+        # Update the activity dropdown with the new list of activities.
+        if activity_names:
+            self.option_activity.configure(values=activity_names)
+            # Automatically select the first activity in the list.
+            self.selected_activity.set(activity_names[0]) 
         else:
-            ctk.CTkMessagebox.showinfo("No Absentees", "No absentees found for the selected date and activity.")
+            # If no activities are found for the selected date, display a default message.
+            self.option_activity.configure(values=["No Activities"])
+            self.selected_activity.set("No Activities")
 
-    def _save_absentee_file(self, df):
+    def show_absentees(self):
         """
-        Opens a file dialog for the user to choose where to save the absentee CSV.
+        Retrieves the selected date and activity, finds the corresponding column index
+        in the CSV, and then calls the external 'extract_absentees' function
+        to get and display the list of absent students.
         """
-        # Import filedialog here to avoid circular dependency if it's in another gui file
-        from tkinter import filedialog 
+        date = self.selected_date.get()     # Get the chosen date from the dropdown
+        activity = self.selected_activity.get() # Get the chosen activity from the dropdown
         
-        # Suggest a default filename
-        default_filename = f"absentees_{self.selected_date_var.get().replace('/', '-')}_{self.selected_activity_var.get().replace(' ', '_')}.csv"
+        # Reset current data and disable export button
+        self.current_absentees = []
+        self.export_btn.configure(state="disabled")
         
+        # Initialize column index to an invalid value.
+        col_index = -1
+        # Iterate through the activities for the selected date to find
+        # the matching activity and retrieve its column index.
+        if date in self.sessions:
+            for item in self.sessions[date]:
+                if item['activity'] == activity:
+                    col_index = item['col_index']
+                    break # Found the matching activity, so stop searching
+        
+        # Before updating, enable the textbox so content can be inserted.
+        self.textbox_result.configure(state="normal")
+        # Clear any previously displayed text in the result textbox.
+        self.textbox_result.delete("0.0", "end") 
+        
+        # If a valid column index was found for the selected date and activity:
+        if col_index != -1:
+            # Call the helper function from 'func/absentees.py' to get the absentees.
+            # This function returns a list of dictionaries: [{'Surname': ..., 'Firstname': ..., 'Matric': ...}]
+            absentees = extract_absentees(self.file_path, col_index)
+            
+            # Check if absentees is not None (None indicates an error occurred)
+            if absentees is not None:
+                self.current_absentees = absentees # Store data for potential export
+                
+                if absentees:
+                    # Format the list of dictionaries into readable strings for the text box
+                    formatted_list = [
+                        f"{student['Surname']} {student['Firstname']} ({student['Matric']})" 
+                        for student in absentees
+                    ]
+                    
+                    count = len(formatted_list)
+                    self.textbox_result.insert("0.0", f"Total Absentees: {count}\n\n" + "\n".join(formatted_list))
+                    
+                    # Enable the export button since we have data
+                    self.export_btn.configure(state="normal")
+                else:
+                    self.textbox_result.insert("0.0", "Good news! No absentees found for this activity.")
+            else:
+                # If None was returned, it means an error occurred in the backend function
+                self.textbox_result.insert("0.0", "Error: Failed to extract absentee data.")
+        else:
+            # If the column index was not found, display an error message.
+            self.textbox_result.insert("0.0", "Error: Could not find data for the selected combination (date and activity).")
+            
+        # After updating, disable the textbox again to make it read-only.
+        self.textbox_result.configure(state="disabled")
+
+    def export_data(self):
+        """
+        Opens a file dialog to let the user choose a location and format (CSV or Excel)
+        to save the absentee list.
+        """
+        if not self.current_absentees:
+            return # No data to export
+
+        # Open file dialog
+        # Junior developer: This opens a standard 'Save As' window.
         file_path = filedialog.asksaveasfilename(
             defaultextension=".csv",
-            initialfile=default_filename,
-            title="Save Absentees Report",
-            filetypes=[("CSV files", "*.csv"), ("All files", "*.*")]
+            filetypes=[("CSV file", "*.csv"), ("Excel file", "*.xlsx")],
+            title="Save Absentees List"
         )
 
         if file_path:
-            try:
-                df.to_csv(file_path, index=False)
-                ctk.CTkMessagebox.showinfo("Success", f"Absentees report saved to:\n{file_path}")
-            except Exception as e:
-                ctk.CTkMessagebox.showerror("Error", f"Failed to save file: {e}")
-
-    def _on_closing(self):
-        """
-        Handles the window closing event. Re-enables the master window.
-        """
-        self.master.deiconify() # Show the main window again
-        self.destroy()
+            # Call the helper function to save the data
+            success = save_absentees(self.current_absentees, file_path)
+            
+            # Provide feedback to the user
+            self.textbox_result.configure(state="normal")
+            if success:
+                self.textbox_result.insert("0.0", f"\n\n[SUCCESS] Data exported to:\n{file_path}\n")
+            else:
+                self.textbox_result.insert("0.0", f"\n\n[ERROR] Failed to export data.\n")
+            self.textbox_result.configure(state="disabled")
