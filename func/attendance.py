@@ -154,8 +154,8 @@ def load_csv_file():
         str: The path to the selected CSV file, or None if no file is chosen.
     """
     # Ask the user to select a file, defaulting to CSV files.
-    file_path = filedialog.askopenfilename(
-        title="Select a CSV file",
+    file_path = filedialog.askopenfilenames(
+        title="Select a CSV  file/files",
         filetypes=[("CSV files", "*.csv"), ("All files", "*.*")]
     )
     return file_path
