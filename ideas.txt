@@ -7,3 +7,11 @@ Then for the exeat it has a button in the normal of the app to do studnet for ex
 Also check the whole codebase for the logic for things and possible flaws in the code or better ways to implemet thtings that is more user friendly
 
 For the file maintiaer updated make sure that the files update in realtime even thought the applcaitions is oopen to make sure that the software is qualtiy
+
+CRITICAL
+1. Make it to be compatible on common man laptop with speed and make an installer for it
+
+ESSIEN
+1. Make it to have an online database using (supabase)
+2. Make it that one will be able to print absenttes over a period of time
+3. Integgrate with MTU-HUB later
