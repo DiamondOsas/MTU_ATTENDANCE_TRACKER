@@ -102,7 +102,7 @@ class PrintAbsenteesWindow(ctk.CTkToplevel):
         self.update_activities(self.dates[0])
         
         # 4. Action Button
-        # Button to trigger the display of absentees.
+        # Button to trigger the display of absentees.   
         # When clicked, it calls the 'show_absentees' method.
         self.btn_show = ctk.CTkButton(self, text="Show Absentees", command=self.show_absentees)
         self.btn_show.grid(row=5, column=0, padx=20, pady=(20, 10))
@@ -215,13 +215,17 @@ class PrintAbsenteesWindow(ctk.CTkToplevel):
         """
         if not self.current_absentees:
             return # No data to export
+        date = self.selected_date.get()     # Get the chosen date from the dropdown
+        activity = self.selected_activity.get()
 
+        filename = activity + date 
         # Open file dialog
         # Junior developer: This opens a standard 'Save As' window.
         file_path = filedialog.asksaveasfilename(
             defaultextension=".csv",
             filetypes=[("CSV file", "*.csv"), ("Excel file", "*.xlsx")],
-            title="Save Absentees List"
+            title="Save Absentees List",
+            initialfile= filename
         )
 
         if file_path:
@@ -235,3 +239,4 @@ class PrintAbsenteesWindow(ctk.CTkToplevel):
             else:
                 self.textbox_result.insert("0.0", f"\n\n[ERROR] Failed to export data.\n")
             self.textbox_result.configure(state="disabled")
+

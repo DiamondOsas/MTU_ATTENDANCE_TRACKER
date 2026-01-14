@@ -182,7 +182,7 @@ class AddAttendanceWindow(ctk.CTkToplevel):
         for file_path in file_paths:
             self.loaded_csv_path = file_path
 
-            
+        
             # Open the viewer window immediately after loading the file
             self.open_viewer_for_column_selection()
 
