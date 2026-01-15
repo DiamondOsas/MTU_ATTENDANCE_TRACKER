@@ -154,11 +154,23 @@ def load_csv_file():
         str: The path to the selected CSV file, or None if no file is chosen.
     """
     # Ask the user to select a file, defaulting to CSV files.
-    file_path = filedialog.askopenfilename(
-        title="Select a CSV file",
+    file_path = filedialog.askopenfilenames(
+        title="Select a CSV  file/files",
         filetypes=[("CSV files", "*.csv"), ("All files", "*.*")]
     )
     return file_path
+
+def normalize_matric(val):
+    """
+    Helper to normalize matric numbers to ensure consistent matching.
+    - Converts to string.
+    - Strips whitespace.
+    - Removes trailing '.0' if present (common in data read from Excel/Pandas).
+    """
+    s = str(val).strip()
+    if s.endswith(".0"):
+        return s[:-2]
+    return s
 
 def update_attendance_sheet(attendance_file_name, program_type, date, external_csv_path, matric_numbers_list=None):
     """
@@ -247,7 +259,7 @@ def update_attendance_sheet(attendance_file_name, program_type, date, external_c
         
         if matric_numbers_list is not None:
             # Use the provided list
-            extracted_matric_numbers = [str(x).strip() for x in matric_numbers_list]
+            extracted_matric_numbers = [normalize_matric(x) for x in matric_numbers_list]
         else:
             # Load matric numbers from the external CSV
             external_df = pd.read_csv(external_csv_path)
@@ -279,7 +291,8 @@ def update_attendance_sheet(attendance_file_name, program_type, date, external_c
                 print("Error: Could not find matric number column. Checked names and numeric content.")
                 return
             
-            extracted_matric_numbers = external_df[matric_column].dropna().astype(str).unique().tolist()
+            # Normalize matric numbers read from dataframe
+            extracted_matric_numbers = [normalize_matric(x) for x in external_df[matric_column].dropna().unique()]
         
         # Add the new date column to DATE and ACTIVITY rows if it doesn't exist
         # First, ensure all rows have the same number of columns
@@ -295,7 +308,7 @@ def update_attendance_sheet(attendance_file_name, program_type, date, external_c
         # Mark attendance for each student
         for i in range(student_data_start_index, len(lines)):
             if i < len(lines) and len(lines[i]) >= 3:  # Ensure we have at least 3 columns (Surname, Firstname, Matric NO)
-                matric_no = str(lines[i][2]).strip()  # Matric NO is at index 2
+                matric_no = normalize_matric(lines[i][2])  # Normalize matric no from file
                 if matric_no in extracted_matric_numbers:
                     lines[i].append('✓')
                 else:

@@ -26,7 +26,7 @@ class AddAttendanceWindow(ctk.CTkToplevel):
         self.parent = parent
         self.loaded_csv_path = None # To store the path of the loaded CSV
         self.selected_date = date.today().strftime('%d/%m/%y') # To store the selected date, default to today
-        self.extracted_matric_numbers = None # To store extracted matric numbers from viewer
+        self.extracted_matric_numbers = [0] # To store extracted matric numbers from viewer
 
         # --- 1. Window Configuration ---
         self.title("Add Attendance")
@@ -174,11 +174,14 @@ class AddAttendanceWindow(ctk.CTkToplevel):
         Handles the 'Load CSV File' button click. Opens a file dialog
         and updates the GUI to show the selected file.
         """
-        file_path = load_csv_file()
-        if file_path:
+        file_paths = load_csv_file()
+        
+        # Initialize/Reset the list to store matric numbers from all selected files
+        self.extracted_matric_numbers = []
+        
+        for file_path in file_paths:
             self.loaded_csv_path = file_path
-            file_name = os.path.basename(file_path)
-            self.loaded_file_label.configure(text=f"Loaded: {file_name}")
+
             
             # Open the viewer window immediately after loading the file
             self.open_viewer_for_column_selection()
@@ -188,23 +191,24 @@ class AddAttendanceWindow(ctk.CTkToplevel):
         Opens the ViewerWindow to allow the user to select the matric number column.
         """
         if self.loaded_csv_path:
-            # Reset previous data to prevent mixing data from different files
-            self.extracted_matric_numbers = None
+            # We do NOT reset self.extracted_matric_numbers here anymore, 
+            # because we want to accumulate data from multiple files in the loop.
+            
             self.add_attendance_button.configure(state="disabled")
 
             # Hide the current window
             self.withdraw()
-            # Open the viewer window, passing the file path and a specific mode
+           
             self.viewer = ViewerWindow(self, self.loaded_csv_path, editable=False, mode="select_column")
             
             # Wait for the window to close
             self.wait_window(self.viewer)
             
-            # After window closes, check if we have data
+            
             if hasattr(self.viewer, 'selected_column_data') and self.viewer.selected_column_data:
-                self.extracted_matric_numbers = self.viewer.selected_column_data
-                # Enable the Add Attendance button since we now have data
-                self.add_attendance_button.configure(state="normal")
+                 
+                 self.extracted_matric_numbers.extend(self.viewer.selected_column_data)     
+                 self.add_attendance_button.configure(state="normal")
             else:
                 # If cancelled or no data, just ensure we are visible again
                 pass
