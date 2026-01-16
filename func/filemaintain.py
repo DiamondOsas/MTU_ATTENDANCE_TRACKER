@@ -4,26 +4,17 @@ import csv
 import json
 from pathlib import Path
 from datetime import datetime
-
-# Define the expected header for student data CSVs.
-# This is a critical constant and should not be changed unless the entire system's data format changes.
+#Self Explantory
 EXPECTED_HEADER = ["Surname", "Firstname", "Matric NO"]
 
 def _get_documents_folder() -> Path:
     """
-    Attempts to find the user's "Documents" folder in a cross-platform way.
-    For Windows, it uses the USERPROFILE environment variable.
-    For other OS (Linux, macOS), it defaults to `~/Documents`.
-
-    Returns:
-        Path: The path to the user's Documents folder.
+    Attempts to find the user's "Documents" folder in Widows.
+    Who tf in MTU uses Linux NOBODY not even me YET>>>.
     """
     # Windows typically stores Documents under the USERPROFILE directory.
-    if os.name == 'nt' and 'USERPROFILE' in os.environ:
-        return Path(os.environ['USERPROFILE']) / "Documents"
-    else:
-        # For Unix-like systems, it's usually directly under the home directory.
-        return Path.home() / "Documents"
+    return Path(os.environ['USERPROFILE'] / "Documents")
+
 
 def _validate_csv_header(file_path: Path) -> bool:
     """
@@ -36,12 +27,13 @@ def _validate_csv_header(file_path: Path) -> bool:
         bool: True if the header matches, False otherwise or if the file cannot be read.
     """
     try:
-        with open(file_path, mode='r', newline='', encoding='utf-8') as f:
+        with open(file_path, mode="r", newline="", encoding="utf-8") as f:
             reader = csv.reader(f)
-            header = next(reader, None)  # Read the first row
-            return header == EXPECTED_HEADER
-    except (IOError, StopIteration, csv.Error) as e:
-        print(f"Error reading header of {file_path}: {e}")
+            header = next(reader, None)
+            if header == EXPECTED_HEADER:
+                return True
+    except (Exception, IOError, StopIteration, csv.Error) as e:
+        print(f"Error reading header File: {e}")
         return False
 
 def perform_daily_backup():
@@ -50,15 +42,9 @@ def perform_daily_backup():
     This ensures we have a recovery point for every day the application is used.
     """
     try:
-        # 1. Determine the AppData path (using APPDATA env var on Windows)
-        if os.name == 'nt':
-            app_data = os.getenv('APPDATA')
-            if not app_data:
-                app_data = Path.home() / "AppData" / "Roaming"
-            else:
-                app_data = Path(app_data)
-        else:
-            app_data = Path.home() / ".config"
+        # App data Location on windows
+        app_data = os.getenv('APPDATA')
+
 
         backup_root = app_data / "MTU_BACKUP"
         # Ensure root backup folder exists
