@@ -1,6 +1,4 @@
 import customtkinter as ctk
-import threading
-from maintain.prepare import prepare_attendance_files
 
 # --- Global CustomTkinter Settings ---
 # These settings apply to the entire application and can be easily changed.
@@ -79,7 +77,7 @@ class AttendanceApp(ctk.CTk):
         self.withdraw()
         # We import here to avoid a circular import at the module level.
         from gui.attendance.addgui import AddAttendanceWindow
-        add_attendance_app = AddAttendanceWindow(self)
+        AddAttendanceWindow(self)
 
     def open_viewer_window(self):
         """
@@ -88,7 +86,7 @@ class AttendanceApp(ctk.CTk):
         self.withdraw()
         # We import here to avoid a circular import at the module level.
         from gui.choosecsvgui import ChooseViewerWindow
-        viewer_app = ChooseViewerWindow(self, viewer_type="view")  #
+        ChooseViewerWindow(self, viewer_type="view")  #
         
     def open_edit_students_window(self):
         """
@@ -96,7 +94,7 @@ class AttendanceApp(ctk.CTk):
         """
         self.withdraw()
         from gui.choosecsvgui import ChooseViewerWindow
-        edit_app = ChooseViewerWindow(self, viewer_type="edit") # Pass a parameter to distinguish
+        ChooseViewerWindow(self, viewer_type="edit") # Pass a parameter to distinguish
 
     def open_absentees_viewer_window(self):
         """

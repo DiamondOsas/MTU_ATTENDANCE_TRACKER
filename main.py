@@ -1,7 +1,7 @@
 import threading
 from internal.maintain.prepare import prepare_attendance_files
 from internal.maintain.maintain import maintain_student_data_files
-from gui.root import AttendanceApp
+from root import AttendanceApp
 
 # this ensures that the appliaction is run as a file and connot be  imported as a module form another package 
 if __name__ == "__main__":

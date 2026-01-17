@@ -4,7 +4,7 @@ import glob
 import csv
 from tkinter import filedialog
 import pandas as pd
-
+from pathlib import Path
 def get_attendance_files():
     """
     Retrieves a list of all CSV file names from the 'db/attendance' directory.
@@ -13,7 +13,7 @@ def get_attendance_files():
         list: A list of strings, where each string is the basename of a CSV file.
               Returns an empty list if the directory doesn't exist or contains no CSV files.
     """
-    # Define the path to the attendance directory.
+    # Go to
     attendance_dir = os.path.join("db", "attendance")
 
     # Check if the directory exists.

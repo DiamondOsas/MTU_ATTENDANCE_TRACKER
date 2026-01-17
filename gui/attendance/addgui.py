@@ -39,7 +39,7 @@ class AddAttendanceWindow(ctk.CTkToplevel):
         self.grid_rowconfigure(6, weight=1) # Adjusted row configure
 
         # --- 2. Title Label ---
-        self.title_label = ctk.CTkLabel(self, text="Add Attendance", font=ctk.CTkFont(size=20, weight="bold"))
+        self.title_label = ctk.CTkLabel(self, text="Create Attendance Record", font=ctk.CTkFont(size=20, weight="bold"))
         self.title_label.grid(row=0, column=0, padx=20, pady=(20, 10))
 
         # --- 3. CSV File Selection ---
@@ -47,7 +47,7 @@ class AddAttendanceWindow(ctk.CTkToplevel):
         self.file_frame.grid(row=1, column=0, padx=20, pady=10, sticky="ew")
         self.file_frame.grid_columnconfigure(0, weight=1)
 
-        self.select_file_label = ctk.CTkLabel(self.file_frame, text="Choose Attendance Sheet:")
+        self.select_file_label = ctk.CTkLabel(self.file_frame, text="Choose Attendance Sheet (All Students):")
         self.select_file_label.grid(row=0, column=0, padx=20, pady=(10, 5))
 
         # Get the list of available attendance CSV files.
@@ -181,7 +181,7 @@ class AddAttendanceWindow(ctk.CTkToplevel):
         self.extracted_matric_numbers = []
         
         for file_path in file_paths:
-        file_paths = load_csv_file()
+          file_paths = load_csv_file()
         
         # Initialize/Reset the list to store matric numbers from all selected files
         self.extracted_matric_numbers = []
