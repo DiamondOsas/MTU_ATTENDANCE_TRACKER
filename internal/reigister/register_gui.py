@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from func.register import register_student
+from internal.reigister.reigister_func import register_student
 from tkinter import messagebox
 
 class RegisterWindow(ctk.CTkToplevel):
