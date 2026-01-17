@@ -27,6 +27,7 @@ class AddAttendanceWindow(ctk.CTkToplevel):
         self.loaded_csv_path = None # To store the path of the loaded CSV
         self.selected_date = date.today().strftime('%d/%m/%y') # To store the selected date, default to today
         self.extracted_matric_numbers = [0] # To store extracted matric numbers from viewer
+        self.extracted_matric_numbers = [0] # To store extracted matric numbers from viewer
 
         # --- 1. Window Configuration ---
         self.title("Add Attendance")
@@ -180,6 +181,12 @@ class AddAttendanceWindow(ctk.CTkToplevel):
         self.extracted_matric_numbers = []
         
         for file_path in file_paths:
+        file_paths = load_csv_file()
+        
+        # Initialize/Reset the list to store matric numbers from all selected files
+        self.extracted_matric_numbers = []
+        
+        for file_path in file_paths:
             self.loaded_csv_path = file_path
 
             
@@ -194,10 +201,14 @@ class AddAttendanceWindow(ctk.CTkToplevel):
             # We do NOT reset self.extracted_matric_numbers here anymore, 
             # because we want to accumulate data from multiple files in the loop.
             
+            # We do NOT reset self.extracted_matric_numbers here anymore, 
+            # because we want to accumulate data from multiple files in the loop.
+            
             self.add_attendance_button.configure(state="disabled")
 
             # Hide the current window
             self.withdraw()
+           
            
             self.viewer = ViewerWindow(self, self.loaded_csv_path, editable=False, mode="select_column")
             
@@ -205,7 +216,11 @@ class AddAttendanceWindow(ctk.CTkToplevel):
             self.wait_window(self.viewer)
             
             
+            
             if hasattr(self.viewer, 'selected_column_data') and self.viewer.selected_column_data:
+                 
+                 self.extracted_matric_numbers.extend(self.viewer.selected_column_data)     
+                 self.add_attendance_button.configure(state="normal")
                  
                  self.extracted_matric_numbers.extend(self.viewer.selected_column_data)     
                  self.add_attendance_button.configure(state="normal")

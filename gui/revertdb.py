@@ -25,7 +25,7 @@ class RevertDBWindow(ctk.CTkToplevel):
         self.backup_list_frame.pack(pady=10, padx=20)
         
         self.selected_backup_path = None
-        self.buttons = [] # Keep references
+        self.buttons = [] # Keep references 
         
         self.load_backups()
         
