@@ -74,7 +74,7 @@ class RegisterWindow(ctk.CTkToplevel):
         self.back_button.grid(row=6, column=0, padx=20, pady=10, sticky="s")
 
 
-    def update_level(self, *args):
+    def update_level(self):
         """Automatically update the level based on the matriculation number."""
         matric_no = self.matric_var.get()
         if len(matric_no) >= 2:
@@ -83,7 +83,7 @@ class RegisterWindow(ctk.CTkToplevel):
             if prefix in level_map:
                 self.level_menu.set(level_map[prefix])
 
-    def update_coll(self, *args):
+    def update_coll(self):
         """Automatically Update the College Entry Box"""
         matric_no = self.matric_var.get()
 
@@ -99,6 +99,7 @@ class RegisterWindow(ctk.CTkToplevel):
         This function will be called when the register button is pressed.
         It will gather the information from the form and pass it to the register function.
         """
+
         surname = self.surname_entry.get()
         name = self.name_entry.get()
         matric_no = self.matric_entry.get()
@@ -135,8 +136,6 @@ class RegisterWindow(ctk.CTkToplevel):
         Closes the current register window and opens the main menu window.
         """
         self.master.deiconify()
-
-        
         self.destroy()
 
 if __name__ == "__main__":

@@ -1,3 +1,4 @@
+
 import pandas as pd
 import os
 
@@ -28,11 +29,12 @@ def _read_csv_robustly(file_path):
         # If parsing fails, fall back to the more lenient 'python' engine.
         # This is essential for reading the attendance files, which have
         # a variable number of columns.
-        try:
-            return pd.read_csv(file_path, header=None, engine='python', skip_blank_lines=True)
-        except Exception as e:
-            print(f"CRITICAL: The fallback CSV reader also failed for {file_path}. Error: {e}")
-            return pd.DataFrame() # Return empty on critical failure
+        print(f'Just cover more edge cases some times bor do you think it is everyone that is unning c')
+        # try:
+        #     return pd.read_csv(file_path, header=None, engine='python', skip_blank_lines=True)
+        # except Exception as e:
+        #     print(f"CRITICAL: The fallback CSV reader also failed for {file_path}. Error: {e}")
+        #     return pd.DataFrame() # Return empty on critical failure
     except Exception as e:
         print(f"An unexpected error occurred while reading {file_path}: {e}")
         return pd.DataFrame()

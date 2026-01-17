@@ -8,9 +8,8 @@ from datetime import date, timedelta, datetime
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
 from func.attendance import get_attendance_files, load_csv_file, update_attendance_sheet
-from gui.viewergui import ViewerWindow
 from gui.calendergui import CalendarDialog
-
+from gui.selcetcolumn import SelectColumnWindow
 class AddAttendanceWindow(ctk.CTkToplevel):
     """
     A window for selecting an attendance sheet, a program type, and managing attendance.
@@ -197,39 +196,33 @@ class AddAttendanceWindow(ctk.CTkToplevel):
         """
         Opens the ViewerWindow to allow the user to select the matric number column.
         """
-        if self.loaded_csv_path:
-            # We do NOT reset self.extracted_matric_numbers here anymore, 
-            # because we want to accumulate data from multiple files in the loop.
-            
-            # We do NOT reset self.extracted_matric_numbers here anymore, 
-            # because we want to accumulate data from multiple files in the loop.
-            
-            self.add_attendance_button.configure(state="disabled")
+    
+        # self.add_attendance_button.configure(state="disabled")
 
-            # Hide the current window
-            self.withdraw()
-           
-           
-            self.viewer = ViewerWindow(self, self.loaded_csv_path, editable=False, mode="select_column")
-            
-            # Wait for the window to close
-            self.wait_window(self.viewer)
-            
-            
-            
-            if hasattr(self.viewer, 'selected_column_data') and self.viewer.selected_column_data:
-                 
-                 self.extracted_matric_numbers.extend(self.viewer.selected_column_data)     
-                 self.add_attendance_button.configure(state="normal")
-                 
-                 self.extracted_matric_numbers.extend(self.viewer.selected_column_data)     
-                 self.add_attendance_button.configure(state="normal")
-            else:
-                # If cancelled or no data, just ensure we are visible again
-                pass
+        # Hide the current window
+        self.withdraw()
+        
+        
+        self.viewer = SelectColumnWindow(self, self.loaded_csv_path)
+        
+        # Wait for the window to close
+        self.wait_window(self.viewer)
+        
+        
+        
+        if hasattr(self.viewer, 'selected_column_data') and self.viewer.selected_column_data:
+                
+                self.extracted_matric_numbers.extend(self.viewer.selected_column_data)     
+                self.add_attendance_button.configure(state="normal")
+                
+                self.extracted_matric_numbers.extend(self.viewer.selected_column_data)     
+                self.add_attendance_button.configure(state="normal")
+        else:
+            # If cancelled or no data, just ensure we are visible again
+            pass
 
-            # Ensure this window is visible again
-            self.deiconify()
+        # Ensure this window is visible again
+        self.deiconify()
 
     def add_attendance_handler(self):
         """
