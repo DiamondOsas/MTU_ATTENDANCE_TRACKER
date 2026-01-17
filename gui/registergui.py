@@ -18,7 +18,6 @@ class RegisterWindow(ctk.CTkToplevel):
         # --- 1. Window Configuration ---
         self.title("Register Students")
         self.geometry("500x350")
-        self.minsize(400, 350)
 
         # Center the content
         self.grid_columnconfigure(0, weight=1)
@@ -53,11 +52,17 @@ class RegisterWindow(ctk.CTkToplevel):
         self.matric_entry = ctk.CTkEntry(self.form_frame, placeholder_text="Enter matriculation number", textvariable=self.matric_var)
         self.matric_entry.grid(row=2, column=1, padx=10, pady=5, sticky="ew")
 
+        #College
+        self.coll_label = ctk.CTkLabel(self.form_frame, text= "College")
+        self.coll_label.grid(row=3, column=0, padx=10, pady=5, sticky="w")
+        self.coll_menu =  ctk.CTkOptionMenu(self.form_frame, values=["CBAS","CHMS","CAHS"])
+        self.coll_menu.grid(row=3, column=1, padx=10, pady=5, sticky="ew")
+
         # Level
         self.level_label = ctk.CTkLabel(self.form_frame, text="Level:")
-        self.level_label.grid(row=3, column=0, padx=10, pady=5, sticky="w")
+        self.level_label.grid(row=4, column=0, padx=10, pady=5, sticky="w")
         self.level_menu = ctk.CTkOptionMenu(self.form_frame, values=["100", "200", "300", "400", "500"])
-        self.level_menu.grid(row=3, column=1, padx=10, pady=5, sticky="ew")
+        self.level_menu.grid(row=4, column=1, padx=10, pady=5, sticky="ew")
 
         # --- Entry Navigation ---
         self.entries = [self.surname_entry, self.name_entry, self.matric_entry]
@@ -67,11 +72,11 @@ class RegisterWindow(ctk.CTkToplevel):
 
         # --- 4. Register Button ---
         self.register_button = ctk.CTkButton(self, text="Register Student", command=self.register_student)
-        self.register_button.grid(row=2, column=0, padx=20, pady=20, sticky="ew")
+        self.register_button.grid(row=5, column=0, padx=20, pady=20, sticky="ew")
 
         # --- 5. Back Button ---
         self.back_button = ctk.CTkButton(self, text="Back to Main Menu", command=self.back_to_main_menu, fg_color="transparent", border_width=2)
-        self.back_button.grid(row=3, column=0, padx=20, pady=20, sticky="s")
+        self.back_button.grid(row=6, column=0, padx=20, pady=20, sticky="s")
 
     def navigate_entries(self, event):
         """Navigate through the entry fields using up and down arrow keys."""
