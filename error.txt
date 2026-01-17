@@ -1,27 +1,80 @@
-Check online on how to fix this error 
-Exception in Tkinter callback
-Traceback (most recent call last):
-  File "C:\PROGRAMMING\CHAPEL\ATTENDANCE SOFTWARE\gui\absentees\printabs.py", line 184, in _save_absentee_file
-    ctk.CTkMessagebox.showinfo("Success", f"Absentees report saved to:\n{file_path}")
-    ^^^^^^^^^^^^^^^^^
-AttributeError: module 'customtkinter' has no attribute 'CTkMessagebox'
+    """
+    Maintains synchronization between student data CSVs in 'db/allstudents'
+    and an external 'MTU-STUDENT-DATA' folder in the user's Documents directory.
+    
+    Also performs a daily backup of the database before synchronization.
 
-During handling of the above exception, another exception occurred:
+    This function handles:
+    1. Daily Backups to AppData.
+    2. Creating the external folder if it doesn't exist.
+    3. Copying internal files to external if external copies are missing.
+    4. Synchronizing files based on modification timestamps:
+        - If an external file is newer, its header is validated. If valid,
+          the internal file is updated from the external one. If invalid,
+          the external file is overwritten by the internal (correct) version.
+        - If an internal file is newer, it overwrites the external file.
+    """
+    
+    # --- Step 0: Perform Daily Backup ---
+    perform_daily_backup()
 
-Traceback (most recent call last):
-  File "C:\Users\user\AppData\Local\Programs\Python\Python313\Lib\tkinter\__init__.py", line 2068, in __call__
-    return self.func(*args)
-           ~~~~~~~~~^^^^^^^
-  File "C:\Users\user\AppData\Local\Programs\Python\Python313\Lib\site-packages\customtkinter\windows\widgets\ctk_button.py", line 554, in _clicked
-    self._command()
-    ~~~~~~~~~~~~~^^
-  File "C:\PROGRAMMING\CHAPEL\ATTENDANCE SOFTWARE\gui\absentees\printabs.py", line 160, in _on_extract_absentees
-    self._save_absentee_file(absentee_df)
-    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
-  File "C:\PROGRAMMING\CHAPEL\ATTENDANCE SOFTWARE\gui\absentees\printabs.py", line 186, in _save_absentee_file
-    ctk.CTkMessagebox.showerror("Error", f"Failed to save file: {e}")
-    ^^^^^^^^^^^^^^^^^
-AttributeError: module 'customtkinter' has no attribute 'CTkMessagebox'
+    # --- Step 1: Synchronization Logic ---
+    # Path to the internal student data directory.
+    internal_data_dir = Path("db") / "allstudents"
 
+    # Path to the external student data directory in the user's Documents.
+    documents_path = _get_documents_folder()
+    external_data_dir = documents_path / "MTU-STUDENT-DATA"
 
-return Path(os.environ['USERPROFILE']) / "Documents"
+    print(f"Internal data directory: {internal_data_dir.resolve()}")
+    print(f"External data directory: {external_data_dir.resolve()}")
+
+    # Ensure the external data directory exists.
+    # If it doesn't exist, it will be created, including any necessary parent directories.
+    external_data_dir.mkdir(parents=True, exist_ok=True)
+    print(f"Ensured external directory exists: {external_data_dir}")
+
+    # Process each CSV file found in the internal data directory.
+    for internal_file_path in internal_data_dir.glob("*.csv"):
+        file_name = internal_file_path.name
+        external_file_path = external_data_dir / file_name
+
+        print(f"\nProcessing file: {file_name}")
+
+        # Case 1: External file does not exist.
+        if not external_file_path.exists():
+            print(f"  External file '{file_name}' not found. Copying from internal.")
+            shutil.copy2(internal_file_path, external_file_path)
+            print(f"  Created external copy: {external_file_path}")
+            continue
+
+        # Case 2: Both internal and external files exist, compare them.
+        try:
+            internal_mtime = internal_file_path.stat().st_mtime
+            external_mtime = external_file_path.stat().st_mtime
+
+            # Convert modification times to human-readable format for logging.
+            internal_dt = datetime.fromtimestamp(internal_mtime)
+            external_dt = datetime.fromtimestamp(external_mtime)
+            print(f"  Internal modified: {internal_dt.strftime('%Y-%m-%d %H:%M:%S')}")
+            print(f"  External modified: {external_dt.strftime('%Y-%m-%d %H:%M:%S')}")
+
+            # If the external file is newer, check its validity.
+            if external_mtime > internal_mtime:
+                print(f"  External file '{file_name}' is newer. Validating its header.")
+                if _validate_csv_header(external_file_path):
+                    print(f"  External file header is VALID. Updating internal file from external.")
+                    shutil.copy2(external_file_path, internal_file_path)
+                else:
+                    print(f"  External file header is INVALID. Overwriting external file with internal (correct) version.")
+                    shutil.copy2(internal_file_path, external_file_path)
+            # If the internal file is newer or they have the same timestamp, ensure external reflects internal.
+            elif internal_mtime > external_mtime:
+                 print(f"  Internal file '{file_name}' is newer. Updating external file from internal.")
+                 shutil.copy2(internal_file_path, external_file_path)
+            else:
+                print(f"  Files '{file_name}' are in sync (same modification time). No action needed.")
+
+        except (Exception, OSError) as e:
+            print(f"  Error accessing file metadata  or error while process in file {file_name}: {e}")
+

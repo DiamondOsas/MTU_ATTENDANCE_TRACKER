@@ -1,11 +1,11 @@
 import threading
-from func.attendance import prepare_attendance_files
-from func.filemaintain import maintain_student_data_files
+from maintain.prepare import prepare_attendance_files
+from maintain.maintain import maintain_student_data_files
 from gui.root import AttendanceApp
 
 # this ensures that the appliaction is run as a file and connot be  imported as a module form another package 
 if __name__ == "__main__":
-    #runs a background thread to mainitina the student data files (you can always check the function)
+    #runs a background thread to mainitain the student data files (you can always check the function)
     maintain_thread = threading.Thread(target=maintain_student_data_files)
     maintain_thread.daemon = True  # Allows the main app to exit even if the thread is running
     maintain_thread.start()

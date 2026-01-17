@@ -1,15 +1,15 @@
 import customtkinter as ctk
 import threading
-from func.attendance import prepare_attendance_files
+from maintain.prepare import prepare_attendance_files
 
 # --- Global CustomTkinter Settings ---
 # These settings apply to the entire application and can be easily changed.
 # 1. Appearance Mode: Controls whether the app uses a light, dark, or system-default theme.
 #    Options: "Light", "Dark", "System" (System uses your OS's current theme).
-ctk.set_appearance_mode("System")
+ctk.set_appearance_mode("Dark")
 # 2. Color Theme: Sets the primary color scheme for widgets like buttons and frames.
 #    Options: "blue", "dark-blue", "green"
-ctk.set_default_color_theme("blue")
+ctk.set_default_color_theme("dark-blue")
 
 class AttendanceApp(ctk.CTk):
     """
@@ -22,14 +22,6 @@ class AttendanceApp(ctk.CTk):
         This constructor sets up the main window and displays the available options.
         """
         super().__init__()
-
-        # --- Run the file preparation in a background thread ---
-        # This prevents the GUI from freezing while files are being copied.
-        prepare_thread = threading.Thread(target=prepare_attendance_files)
-        prepare_thread.daemon = True  # Allows the main app to exit even if the thread is running
-        prepare_thread.start()
-
-
         # --- 1. Main Window Configuration ---
         self.title("Attendance Tracker - Main Menu")
         self.geometry("500x550")
@@ -37,7 +29,7 @@ class AttendanceApp(ctk.CTk):
 
         # Configure the main window's grid layout to center the content.
         self.grid_rowconfigure(0, weight=1)
-        self.grid_rowconfigure(8, weight=1) # Adjusted to account for the new row
+        self.grid_rowconfigure(8, weight=1) # Adjusted to account    for the new row
         self.grid_columnconfigure(0, weight=1)
 
         # --- 2. Title Label ---
@@ -78,7 +70,7 @@ class AttendanceApp(ctk.CTk):
         self.withdraw()
         # We import here to avoid a circular import at the module level.
         from gui.registergui import RegisterWindow
-        register_app = RegisterWindow(self)
+        RegisterWindow(self)
 
     def open_add_attendance_window(self):
         """
