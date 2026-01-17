@@ -17,7 +17,7 @@ class RegisterWindow(ctk.CTkToplevel):
 
         # --- 1. Window Configuration ---
         self.title("Register Students")
-        self.geometry("500x350")
+        self.geometry("500x420")
 
         # Center the content
         self.grid_columnconfigure(0, weight=1)
@@ -49,6 +49,7 @@ class RegisterWindow(ctk.CTkToplevel):
         self.matric_label.grid(row=2, column=0, padx=10, pady=5, sticky="w")
         self.matric_var = ctk.StringVar()
         self.matric_var.trace_add("write", self.update_level)
+        self.matric_var.trace_add("write", self.update_coll)
         self.matric_entry = ctk.CTkEntry(self.form_frame, placeholder_text="Enter matriculation number", textvariable=self.matric_var)
         self.matric_entry.grid(row=2, column=1, padx=10, pady=5, sticky="ew")
 
@@ -64,32 +65,14 @@ class RegisterWindow(ctk.CTkToplevel):
         self.level_menu = ctk.CTkOptionMenu(self.form_frame, values=["100", "200", "300", "400", "500"])
         self.level_menu.grid(row=4, column=1, padx=10, pady=5, sticky="ew")
 
-        # --- Entry Navigation ---
-        self.entries = [self.surname_entry, self.name_entry, self.matric_entry]
-        for entry in self.entries:
-            entry.bind("<Up>", self.navigate_entries)
-            entry.bind("<Down>", self.navigate_entries)
-
         # --- 4. Register Button ---
         self.register_button = ctk.CTkButton(self, text="Register Student", command=self.register_student)
         self.register_button.grid(row=5, column=0, padx=20, pady=20, sticky="ew")
 
         # --- 5. Back Button ---
         self.back_button = ctk.CTkButton(self, text="Back to Main Menu", command=self.back_to_main_menu, fg_color="transparent", border_width=2)
-        self.back_button.grid(row=6, column=0, padx=20, pady=20, sticky="s")
+        self.back_button.grid(row=6, column=0, padx=20, pady=10, sticky="s")
 
-    def navigate_entries(self, event):
-        """Navigate through the entry fields using up and down arrow keys."""
-        current_widget = self.focus_get()
-        if current_widget in self.entries:
-            current_index = self.entries.index(current_widget)
-            if event.keysym == "Down":
-                next_index = (current_index + 1) % len(self.entries)
-            elif event.keysym == "Up":
-                next_index = (current_index - 1) % len(self.entries)
-            
-            self.entries[next_index].focus_set()
-            return "break"
 
     def update_level(self, *args):
         """Automatically update the level based on the matriculation number."""
@@ -99,6 +82,17 @@ class RegisterWindow(ctk.CTkToplevel):
             level_map = {"25": "100", "24": "200", "23": "300", "22": "400", "21": "500"}
             if prefix in level_map:
                 self.level_menu.set(level_map[prefix])
+
+    def update_coll(self, *args):
+        """Automatically Update the College Entry Box"""
+        matric_no = self.matric_var.get()
+
+        if len(matric_no) == 4:
+            prefix = matric_no[-1]
+            level_map = {"1": "CBAS", "2": "CHMS", "3": "CAHS"}
+            if prefix in level_map:
+                self.coll_menu.set(level_map[prefix])
+            
 
     def register_student(self):
         """
