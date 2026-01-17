@@ -1,5 +1,4 @@
 import os
-import shutil
 import glob
 import csv
 from tkinter import filedialog

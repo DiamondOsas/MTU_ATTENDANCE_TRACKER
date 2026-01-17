@@ -2,14 +2,14 @@ import customtkinter as ctk
 from tkinter import messagebox
 import os
 import sys
-from datetime import date, timedelta, datetime
+from datetime import date, datetime
 
 # Add the parent directory to the path so we can import from the func module
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
-from func.attendance import get_attendance_files, load_csv_file, update_attendance_sheet
-from gui.calendergui import CalendarDialog
-from gui.selcetcolumn import SelectColumnWindow
+from internal.attendance.attendance import get_attendance_files, load_csv_file, update_attendance_sheet
+from internal.calender import CalendarDialog
+from internal.attendance.create.create_func import SelectColumnWindow
 class AddAttendanceWindow(ctk.CTkToplevel):
     """
     A window for selecting an attendance sheet, a program type, and managing attendance.
@@ -25,9 +25,6 @@ class AddAttendanceWindow(ctk.CTkToplevel):
         self.parent = parent
         self.loaded_csv_path = None # To store the path of the loaded CSV
         self.selected_date = date.today().strftime('%d/%m/%y') # To store the selected date, default to today
-        self.extracted_matric_numbers = [0] # To store extracted matric numbers from viewer
-        self.extracted_matric_numbers = [0] # To store extracted matric numbers from viewer
-
         # --- 1. Window Configuration ---
         self.title("Add Attendance")
         self.geometry("500x600") # Increased height for new widgets
@@ -66,7 +63,7 @@ class AddAttendanceWindow(ctk.CTkToplevel):
         self.program_frame = ctk.CTkFrame(self)
         self.program_frame.grid(row=2, column=0, padx=20, pady=10, sticky="ew")
         self.program_frame.grid_columnconfigure(0, weight=1)
-
+        
         self.select_program_label = ctk.CTkLabel(self.program_frame, text="Choose Program Type: ")
         self.select_program_label.grid(row=0, column=0, padx=20, pady=(10, 5))
 

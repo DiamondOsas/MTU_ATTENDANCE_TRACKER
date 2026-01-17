@@ -8,7 +8,7 @@ import pandas as pd
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
 from func.viewer import get_all_students_files
-from func.attendance import get_attendance_files
+from internal.attendance.attendance import get_attendance_files
 
 
 class ChooseViewerWindow(ctk.CTkToplevel):

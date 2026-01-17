@@ -76,7 +76,7 @@ class AttendanceApp(ctk.CTk):
         """
         self.withdraw()
         # We import here to avoid a circular import at the module level.
-        from gui.attendance.addgui import AddAttendanceWindow
+        from internal.attendance.create.create_gui import AddAttendanceWindow
         AddAttendanceWindow(self)
 
     def open_viewer_window(self):

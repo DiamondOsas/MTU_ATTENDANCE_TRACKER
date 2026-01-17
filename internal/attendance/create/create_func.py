@@ -104,3 +104,4 @@ class SelectColumnWindow(ctk.CTkToplevel):
         except:
             pass
         super().destroy()
+      
