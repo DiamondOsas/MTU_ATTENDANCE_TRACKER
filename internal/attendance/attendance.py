@@ -49,17 +49,17 @@ def load_csv_file():
     )
     return file_path
 
-def load_csv_file_range(days)-> bool:
+# def load_csv_file_range(days)-> bool:
     
-    file_path = filedialog.askopenfilenames(
-        title=f" Select {days} CSV Files",
-        filetypes =[("CSV Files", "*csv"), ("All Files", "*.*")]
-    )
-    if len(file_path) < days:
-        print(f"Please select {days} number of CSV")
-        return False
-    else:
-        return True 
+#     file_path = filedialog.askopenfilenames(
+#         title=f" Select {days} CSV Files",
+#         filetypes =[("CSV Files", "*csv"), ("All Files", "*.*")]
+#     )
+#     if len(file_path) < days:
+#         print(f"Please select {days} number of CSV")
+#         return False
+#     else:
+#         return True 
 
     
 
