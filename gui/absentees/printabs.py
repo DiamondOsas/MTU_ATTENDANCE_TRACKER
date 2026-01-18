@@ -87,14 +87,9 @@ class PrintAbsenteesWindow(ctk.CTkToplevel):
         self.option_date.grid(row=2, column=0, padx=20, pady=(0, 10), sticky="ew")
         
         # 3. Activity Selection Dropdown
-        # Label for the activity selection dropdown.
         self.label_activity = ctk.CTkLabel(self, text="Select Activity:", font=label_font)
         self.label_activity.grid(row=3, column=0, padx=20, pady=(10, 0), sticky="w")
-        
-        # ctk.StringVar to track the selected activity.
         self.selected_activity = ctk.StringVar()
-        # The CTkOptionMenu for activities. Its values will be updated
-        # whenever a new date is selected.
         self.option_activity = ctk.CTkOptionMenu(self, variable=self.selected_activity)
         self.option_activity.grid(row=4, column=0, padx=20, pady=(0, 10), sticky="ew")
         
@@ -102,14 +97,10 @@ class PrintAbsenteesWindow(ctk.CTkToplevel):
         self.update_activities(self.dates[0])
         
         # 4. Action Button
-        # Button to trigger the display of absentees.   
-        # When clicked, it calls the 'show_absentees' method.
         self.btn_show = ctk.CTkButton(self, text="Show Absentees", command=self.show_absentees)
         self.btn_show.grid(row=5, column=0, padx=20, pady=(20, 10))
 
         # 5. Export Button
-        # Button to export the absentee list to CSV or Excel.
-        # It is initially disabled and only enabled when absentees are found.
         self.export_btn = ctk.CTkButton(self, text="Export to File", command=self.export_data, state="disabled")
         self.export_btn.grid(row=6, column=0, padx=20, pady=(0, 20))
         
@@ -119,6 +110,18 @@ class PrintAbsenteesWindow(ctk.CTkToplevel):
         self.textbox_result.grid(row=7, column=0, padx=20, pady=(0, 20), sticky="nsew")
         # Make the textbox read-only by default so users cannot type in it.
         self.textbox_result.configure(state="disabled")
+
+        # --- 6. Back Button ---
+        self.back_button = ctk.CTkButton(self, text="Back to Menu", command=self.close_window)
+        self.back_button.grid(row=8, column=0, padx=20, pady=20, sticky="s")
+
+        
+    def close_window(self):
+        """
+        Closes this window and shows the parent window again.
+        """
+        self.master.deiconify()
+        self.destroy()
 
     def update_activities(self, date):
         """

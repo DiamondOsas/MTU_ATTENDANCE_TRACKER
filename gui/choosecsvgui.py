@@ -136,7 +136,7 @@ class ChooseViewerWindow(ctk.CTkToplevel):
             pd.read_csv(file_path)
             
             # The ViewerWindow can handle both viewing and editing
-            from gui.viewergui import ViewerWindow
+            from internal.attendance.view.viewer_gui import ViewerWindow
             
             is_editable = (self.viewer_type == "edit")
             
@@ -144,7 +144,7 @@ class ChooseViewerWindow(ctk.CTkToplevel):
             self.destroy()
             
             # Open the viewer window, passing the file path and edit status
-            viewer_app = ViewerWindow(
+            ViewerWindow(
                 parent=self.parent,
                 file_path=file_path,
                 editable=is_editable

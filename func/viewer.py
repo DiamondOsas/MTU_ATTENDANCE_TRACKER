@@ -10,11 +10,7 @@ def _read_csv_robustly(file_path):
     If it encounters a ParserError or ValueError (often caused by inconsistent
     column counts, like in the attendance files), it falls back to the more
     flexible, but slower, 'python' engine.
-    
-    When falling back, it uses `header=None` to prevent the engine from getting
-    confused by trying to match header columns to data columns. This prevents
-    the "Error tokenizing data. C error: Expected X fields in line Y, saw Z" crash.
-    
+
     Args:
         file_path (str): The path to the CSV file.
         
@@ -42,16 +38,6 @@ def _read_csv_robustly(file_path):
 def get_students_data(level):
     """
     Reads the students data for a given level from the CSV file.
-    """
-    file_path = os.path.join("db", "allstudents", f"{level}.csv")
-    if os.path.exists(file_path):
-        return _read_csv_robustly(file_path)
-    else:
-        return pd.DataFrame() # Return empty DataFrame if file doesn't exist
-
-def get_students_data_by_level(level):
-    """
-    Reads the all students data for a given level from the CSV file.
     """
     file_path = os.path.join("db", "allstudents", f"{level}.csv")
     if os.path.exists(file_path):
