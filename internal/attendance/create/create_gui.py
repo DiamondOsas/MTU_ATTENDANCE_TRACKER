@@ -1,263 +1,122 @@
 import customtkinter as ctk
 from tkinter import messagebox
 import os
-import sys
 from datetime import date, datetime
-
-# Add the parent directory to the path so we can import from the func module
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
-
 from internal.attendance.attendance import get_attendance_files, load_csv_file, update_attendance_sheet
 from internal.calender import CalendarDialog
-from internal.attendance.create.create_func import SelectColumnWindow
+from internal.attendance.view.viewer_gui import ViewerWindow
+
 class AddAttendanceWindow(ctk.CTkToplevel):
     """
-    A window for selecting an attendance sheet, a program type, and managing attendance.
+    Window to create a new attendance record (column) in the attendance sheet.
     """
     def __init__(self, parent):
-        """
-        Initializes the AddAttendanceWindow.
-
-        Args:
-            parent: The parent window that opened this window.
-        """
         super().__init__(parent)
         self.parent = parent
-        self.loaded_csv_path = None # To store the path of the loaded CSV
-        self.selected_date = date.today().strftime('%d/%m/%y') # To store the selected date, default to today
-        # --- 1. Window Configuration ---
+        self.loaded_csv_path = None 
+        self.extracted_matric_numbers = []
+        self.selected_date = date.today().strftime('%d/%m/%y')
+        
         self.title("Add Attendance")
-        self.geometry("500x600") # Increased height for new widgets
+        self.geometry("500x600")
         self.resizable(False, False)
-
-        # Center the window
+        
         self.grid_columnconfigure(0, weight=1)
-        self.grid_rowconfigure(6, weight=1) # Adjusted row configure
-
-        # --- 2. Title Label ---
-        self.title_label = ctk.CTkLabel(self, text="Create Attendance Record", font=ctk.CTkFont(size=20, weight="bold"))
-        self.title_label.grid(row=0, column=0, padx=20, pady=(20, 10))
-
-        # --- 3. CSV File Selection ---
-        self.file_frame = ctk.CTkFrame(self)
-        self.file_frame.grid(row=1, column=0, padx=20, pady=10, sticky="ew")
-        self.file_frame.grid_columnconfigure(0, weight=1)
-
-        self.select_file_label = ctk.CTkLabel(self.file_frame, text="Choose Attendance Sheet (All Students):")
-        self.select_file_label.grid(row=0, column=0, padx=20, pady=(10, 5))
-
-        # Get the list of available attendance CSV files.
-        self.attendance_files = get_attendance_files()
         
-        self.file_dropdown = ctk.CTkComboBox(
-            self.file_frame,
-            values=self.attendance_files if self.attendance_files else ["No files found"],
-            width=300
-        )
-        self.file_dropdown.grid(row=1, column=0, padx=20, pady=10)
-        if not self.attendance_files:
-            self.file_dropdown.set("No files found")
-            self.file_dropdown.configure(state="disabled")
-
-        # --- 4. Program Type Selection ---
-        self.program_frame = ctk.CTkFrame(self)
-        self.program_frame.grid(row=2, column=0, padx=20, pady=10, sticky="ew")
-        self.program_frame.grid_columnconfigure(0, weight=1)
+        # UI Setup
+        ctk.CTkLabel(self, text="Create Attendance Record", font=("Arial", 20, "bold")).grid(row=0, column=0, pady=20)
         
-        self.select_program_label = ctk.CTkLabel(self.program_frame, text="Choose Program Type: ")
-        self.select_program_label.grid(row=0, column=0, padx=20, pady=(10, 5))
+        # 1. File Selection
+        frame_file = ctk.CTkFrame(self)
+        frame_file.grid(row=1, column=0, padx=20, pady=10, sticky="ew")
+        ctk.CTkLabel(frame_file, text="Choose Attendance Sheet:").pack(pady=5)
+        
+        files = get_attendance_files()
+        self.file_dropdown = ctk.CTkComboBox(frame_file, values=files if files else ["No files found"], width=300)
+        self.file_dropdown.pack(pady=10)
+        if not files: self.file_dropdown.configure(state="disabled")
 
-        # --- Easily modifiable list of programs ---
-        # To add more options, just add a new string to this list.
-        # For example: ["Morning", "Evening", "Special Program", "Mid-week Service"]
-        self.program_types = ["MORNING SERVICE", "EVENING SERVICE", "MANNA WATER", "PMCH", "MTU PRAYS", "SPECIAL SERVICE"]
+        # 2. Program Type
+        frame_prog = ctk.CTkFrame(self)
+        frame_prog.grid(row=2, column=0, padx=20, pady=10, sticky="ew")
+        ctk.CTkLabel(frame_prog, text="Choose Program Type:").pack(pady=5)
+        
+        programs = ["MORNING SERVICE", "EVENING SERVICE", "MANNA WATER", "PMCH", "MTU PRAYS", "SPECIAL SERVICE"]
+        self.prog_dropdown = ctk.CTkComboBox(frame_prog, values=programs, width=300)
+        self.prog_dropdown.pack(pady=10)
+        self.prog_dropdown.set(programs[0])
 
-        self.program_dropdown = ctk.CTkComboBox(
-            self.program_frame,
-            values=self.program_types,
-            width=300
-        )
-        self.program_dropdown.grid(row=1, column=0, padx=20, pady=10)
-        self.program_dropdown.set(self.program_types[0]) # Set a default value
-
-        # --- 4.5 Date Selection (Custom Calendar) ---
-        self.date_frame = ctk.CTkFrame(self)
-        self.date_frame.grid(row=3, column=0, padx=20, pady=10, sticky="ew")
-        self.date_frame.grid_columnconfigure((0, 1, 2, 3), weight=1)
-
-        self.date_label = ctk.CTkLabel(self.date_frame, text="Select Date:")
-        self.date_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-
-        self.date_entry = ctk.CTkEntry(self.date_frame, width=120)
-        self.date_entry.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
+        # 3. Date Selection
+        frame_date = ctk.CTkFrame(self)
+        frame_date.grid(row=3, column=0, padx=20, pady=10, sticky="ew")
+        ctk.CTkLabel(frame_date, text="Select Date:").pack(side="left", padx=10)
+        
+        self.date_entry = ctk.CTkEntry(frame_date, width=120)
+        self.date_entry.pack(side="left", padx=5)
         self.date_entry.insert(0, self.selected_date)
-        self.date_entry.bind("<FocusOut>", self.validate_date_entry)
-
-        # --- 4.5 Date Selection (Custom Calendar) ---
-        self.date_frame = ctk.CTkFrame(self)
-        self.date_frame.grid(row=3, column=0, padx=20, pady=10, sticky="ew")
-        # Adjusted column configure as we're removing prev/next day buttons
-        self.date_frame.grid_columnconfigure((0, 1, 2), weight=1) 
-
-        self.date_label = ctk.CTkLabel(self.date_frame, text="Select Date:")
-        self.date_label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-
-        self.date_entry = ctk.CTkEntry(self.date_frame, width=120)
-        self.date_entry.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
-        self.date_entry.insert(0, self.selected_date)
-        self.date_entry.bind("<FocusOut>", self.validate_date_entry)
-
-        self.calendar_button = ctk.CTkButton(self.date_frame, text="📅", width=30, command=self.open_calendar)
-        self.calendar_button.grid(row=0, column=2, padx=(2, 5), pady=5, sticky="e")
-
-        # --- 5. Action Buttons ---
-        self.button_frame = ctk.CTkFrame(self)
-        self.button_frame.grid(row=4, column=0, padx=20, pady=20)
-        self.button_frame.grid_columnconfigure(0, weight=1)
-
-        # This button will load the selected CSV file.
-        self.load_csv_button = ctk.CTkButton(
-            self.button_frame,
-            text="Load External CSV File",
-            command=self.load_csv_file_handler,
-        )
-        self.load_csv_button.grid(row=0, column=0, padx=10, pady=(10, 5), sticky="ew")
-
-        # This button will handle adding attendance.
-        self.add_attendance_button = ctk.CTkButton(
-            self.button_frame,
-            text="Add Attendance",
-            command=self.add_attendance_handler,
-            state="disabled" # Disabled until a file is loaded
-        )
-        self.add_attendance_button.grid(row=1, column=0, padx=10, pady=(5, 10), sticky="ew")
-
-        # --- New Label for loaded file ---
-        self.loaded_file_label = ctk.CTkLabel(self, text="No external file loaded.", font=ctk.CTkFont(size=12))
-        self.loaded_file_label.grid(row=5, column=0, padx=30, pady=(0,0), sticky="s")
         
-        # --- 6. Back Button ---
-        self.back_button = ctk.CTkButton(self, text="Back to Menu", command=self.close_window)
-        self.back_button.grid(row=6, column=0, padx=20, pady=20, sticky="s")
+        ctk.CTkButton(frame_date, text="📅", width=30, command=self.open_calendar).pack(side="left", padx=5)
 
-    def validate_date_entry(self, event=None):
-        """
-        Validates the date entered in the entry field.
-        """
-        date_str = self.date_entry.get()
-        try:
-            # Attempt to parse the date in dd/mm/yy format
-            datetime.strptime(date_str, '%d/%m/%y')
-            self.selected_date = date_str
-        except ValueError:
-            messagebox.showerror("Invalid Date", "Please enter the date in DD/MM/YY format.")
-            self.date_entry.delete(0, ctk.END)
-            self.date_entry.insert(0, date.today().strftime('%d/%m/%y'))
-            self.selected_date = date.today().strftime('%d/%m/%y')
+        # 4. Load External CSV
+        frame_btns = ctk.CTkFrame(self)
+        frame_btns.grid(row=4, column=0, padx=20, pady=20)
+        
+        ctk.CTkButton(frame_btns, text="Load External CSV (Matric Nos)", command=self.load_csv_handler).pack(fill="x", pady=5)
+        self.btn_add = ctk.CTkButton(frame_btns, text="Add Attendance", command=self.add_attendance, state="disabled")
+        self.btn_add.pack(fill="x", pady=5)
+        
+        self.lbl_loaded = ctk.CTkLabel(self, text="No external file loaded.", font=("Arial", 12))
+        self.lbl_loaded.grid(row=5, column=0)
+
+        # 5. Back
+        ctk.CTkButton(self, text="Back to Menu", command=self.close_window).grid(row=6, column=0, pady=20)
 
     def open_calendar(self):
-        """
-        Opens a calendar dialog to select a date.
-        """
-        calendar_dialog = CalendarDialog(self, self.selected_date)
-        self.wait_window(calendar_dialog)  # Wait for the calendar dialog to close
-        if calendar_dialog.selected_date:
-            self.selected_date = calendar_dialog.selected_date.strftime('%d/%m/%y')
-            self.date_entry.delete(0, ctk.END)
+        cal = CalendarDialog(self, self.selected_date)
+        self.wait_window(cal)
+        if cal.selected_date:
+            self.selected_date = cal.selected_date.strftime('%d/%m/%y')
+            self.date_entry.delete(0, 'end')
             self.date_entry.insert(0, self.selected_date)
 
-    def load_csv_file_handler(self):
-        """
-        Handles the 'Load CSV File' button click. Opens a file dialog
-        and updates the GUI to show the selected file.
-        """
-        file_paths = load_csv_file()
+    def load_csv_handler(self):
+        # load_csv_file returns a tuple of paths (from filedialog)
+        paths = load_csv_file() 
+        if not paths: return
         
-        # Initialize/Reset the list to store matric numbers from all selected files
         self.extracted_matric_numbers = []
         
-        for file_path in file_paths:
-          file_paths = load_csv_file()
-        
-        # Initialize/Reset the list to store matric numbers from all selected files
-        self.extracted_matric_numbers = []
-        
-        for file_path in file_paths:
-            self.loaded_csv_path = file_path
-
+        for path in paths:
+            self.loaded_csv_path = path
+            self.lbl_loaded.configure(text=f"Processing: {os.path.basename(path)}")
             
-            # Open the viewer window immediately after loading the file
-            self.open_viewer_for_column_selection()
-
-    def open_viewer_for_column_selection(self):
-        """
-        Opens the ViewerWindow to allow the user to select the matric number column.
-        """
-    
-        # self.add_attendance_button.configure(state="disabled")
-
-        # Hide the current window
-        self.withdraw()
+            # Open Viewer to select column
+            self.withdraw()
+            viewer = ViewerWindow(self, path, mode="select_column")
+            self.wait_window(viewer)
+            self.deiconify()
+            
+            if viewer.selected_column_data:
+                self.extracted_matric_numbers.extend(viewer.selected_column_data)
         
-        
-        self.viewer = SelectColumnWindow(self, self.loaded_csv_path)
-        
-        # Wait for the window to close
-        self.wait_window(self.viewer)
-        
-        
-        
-        if hasattr(self.viewer, 'selected_column_data') and self.viewer.selected_column_data:
-                
-                self.extracted_matric_numbers.extend(self.viewer.selected_column_data)     
-                self.add_attendance_button.configure(state="normal")
-                
-                self.extracted_matric_numbers.extend(self.viewer.selected_column_data)     
-                self.add_attendance_button.configure(state="normal")
+        if self.extracted_matric_numbers:
+            self.btn_add.configure(state="normal")
+            self.lbl_loaded.configure(text=f"Loaded {len(self.extracted_matric_numbers)} matric numbers.")
         else:
-            # If cancelled or no data, just ensure we are visible again
-            pass
+            self.lbl_loaded.configure(text="No data loaded.")
 
-        # Ensure this window is visible again
-        self.deiconify()
-
-    def add_attendance_handler(self):
-        """
-        Handles the attendance marking process by gathering all the required data.
-        """
-        attendance_file = self.file_dropdown.get()
-        program_type = self.program_dropdown.get()
-        date_to_add = self.selected_date # Renamed to avoid conflict with datetime.date
-        external_csv = self.loaded_csv_path
-
-        if not all([attendance_file, program_type, date_to_add, external_csv]):
-            messagebox.showerror("Error", "Please ensure all fields are selected.")
+    def add_attendance(self):
+        sheet = self.file_dropdown.get()
+        program = self.prog_dropdown.get()
+        date_val = self.date_entry.get()
+        
+        if not all([sheet, program, date_val, self.extracted_matric_numbers]):
+            messagebox.showerror("Error", "Missing information.")
             return
 
-        # Call the backend function to update the attendance sheet
-        # Now passing extracted_matric_numbers
-        update_attendance_sheet(attendance_file, program_type, date_to_add, external_csv, self.extracted_matric_numbers)
+        update_attendance_sheet(sheet, program, date_val, self.loaded_csv_path, self.extracted_matric_numbers)
         messagebox.showinfo("Success", "Attendance updated successfully!")
 
     def close_window(self):
-        """
-        Closes this window and shows the parent window again.
-        """
         self.parent.deiconify()
         self.destroy()
-
-
-if __name__ == '__main__':
-    # This allows you to run and test this GUI file directly.
-    # You would need a dummy parent window for it to work.
-    class DummyRoot(ctk.CTk):
-        def __init__(self):
-            super().__init__()
-            self.title("Dummy Parent")
-            self.geometry("700x500")
-            self.withdraw() # Hide the dummy root
-            app = AddAttendanceWindow(self)
-            app.protocol("WM_DELETE_WINDOW", self.quit)
-
-    root = DummyRoot()
-    root.mainloop()

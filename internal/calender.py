@@ -13,7 +13,7 @@ class CalendarDialog(ctk.CTkToplevel):
         
         self.parent = parent
         self.selected_date = None
-        
+
         # Parse initial date if provided
         if initial_date:
             try:
