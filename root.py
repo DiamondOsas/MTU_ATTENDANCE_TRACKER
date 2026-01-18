@@ -101,7 +101,7 @@ class AttendanceApp(ctk.CTk):
         Closes the main menu and opens the window to choose an attendance file for absentee printing.
         """
         self.withdraw()
-        from gui.absentees.choose import ChooseAbsenteeFileWindow
+        from internal.absentees.abs_gui import ChooseAbsenteeFileWindow
         absentees_app = ChooseAbsenteeFileWindow(self)
 
     def open_revert_window(self):

@@ -60,7 +60,7 @@ def extract_absentees(file_path, col_index):
         
         df = pd.read_csv(file_path, names=[str(i) for i in range(50)], dtype=str, on_bad_lines='skip')
         # Rename first 3 columns for clarity (assuming standard structure)
-        df.rename(columns={'0': 'Surname', '1': 'Firstname', '2': 'Matric'}, inplace=True)
+        df.rename(columns={'0': 'Surname', '1': 'Firstname', '2': 'Matric NO'}, inplace=True)
         
         # 1. Filter out metadata rows (DATE, ACTIVITY, or empty Surname)
         # We keep rows where 'Surname' is not one of the keywords
@@ -79,7 +79,7 @@ def extract_absentees(file_path, col_index):
         absent_mask = clean_df[target_col].str.strip().isin(['x', 'X', '✗'])
         absentees = clean_df[absent_mask]
         
-        return absentees[['Surname', 'Firstname', 'Matric']].to_dict('records')
+        return absentees[['Surname', 'Firstname', 'Matric NO']].to_dict('records')
 
     except Exception as e:
         print(f"Error extracting absentees: {e}")

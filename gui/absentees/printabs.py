@@ -90,17 +90,18 @@ class PrintAbsenteesWindow(ctk.CTkToplevel):
                 if item['activity'] == activity:
                     col_index = item['col_index']
                     break
-        
+        print(col_index)
         self.textbox_result.configure(state="normal")
         self.textbox_result.delete("0.0", "end") 
         
         if col_index != -1:
             absentees = extract_absentees(self.file_path, col_index)
+            print(absentees)
             
             if absentees is not None:
                 self.current_absentees = absentees
                 if absentees:
-                    formatted_list = [f"{s['Surname']} {s['Firstname']} ({s['Matric']})" for s in absentees]
+                    formatted_list = [f"{s['Surname']} {s['Firstname']} ({s['Matric NO']})" for s in absentees]
                     self.textbox_result.insert("0.0", f"Total Absentees: {len(absentees)}\n\n" + "\n".join(formatted_list))
                     self.export_btn.configure(state="normal")
                 else:
