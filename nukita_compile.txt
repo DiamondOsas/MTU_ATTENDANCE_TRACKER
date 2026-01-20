@@ -1,1 +1,1 @@
-python -m nuitka --onefile --standalone --disable-console --enable-plugin=tk-inter --include-package-data=customtkinter --assume-yes-for-downloads main.py
+python m nuitka --onefile --follow-imports main.py

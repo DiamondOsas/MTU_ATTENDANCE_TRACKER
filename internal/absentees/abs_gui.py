@@ -109,7 +109,7 @@ class PrintAbsenteesWindow(ctk.CTkToplevel):
                 if item['activity'] == activity:
                     col_index = item['col_index']
                     break
-        print(col_index)
+        print(f"Column Index: {col_index}")
         self.textbox_result.configure(state="normal")
         self.textbox_result.delete("0.0", "end") 
         
@@ -135,10 +135,14 @@ class PrintAbsenteesWindow(ctk.CTkToplevel):
     def export_data(self):
         if not self.current_absentees: return
 
-        filename = f"{self.selected_activity.get()}_{self.selected_date.get()}".replace("/", "-")
+        level_name = os.path.splitext(os.path.basename(self.file_path))[0]
+        activity = self.selected_activity.get()
+        date = self.selected_date.get().replace("/", "-")
+
+        filename = f"{level_name}_{date}_{activity}"
         file_path = filedialog.asksaveasfilename(
             defaultextension=".csv",
-            filetypes=[("CSV file", "*.csv"), ("Excel file", "*.xlsx")],
+            filetypes=[("Excel file", "*.xlsx"), ("CSV file", "*.csv")],
             title="Save Absentees List",
             initialfile=filename
         )
