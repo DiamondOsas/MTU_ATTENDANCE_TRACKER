@@ -4,7 +4,7 @@ import pandas as pd
 import os
 from tksheet import Sheet
 from internal.utils.csv_handler import read_csv_robust, save_csv, get_csv_columns, get_column_data
-
+from internal.choosecsv import ChooseCSVWindow
 class DataTable(ctk.CTkFrame):
     """
     A wrapper around tksheet for displaying Pandas DataFrames.
@@ -42,6 +42,23 @@ class DataTable(ctk.CTkFrame):
         headers = self.sheet.headers()
         return pd.DataFrame(data, columns=headers)
 
+
+class ChooseAbsenteeFileWindow(ChooseCSVWindow):
+    """
+    Wrapper for ChooseCSVWindow to select attendance files and open the absentee report.
+    """
+    def __init__(self, master):
+        attendance_dir = os.path.join(os.path.dirname(__file__), "..", "..", "db", "attendance")
+        super().__init__(master, 
+                         target_dir=attendance_dir, 
+                         callback=self.open_report,
+                         title="Select Attendance File")
+
+    def open_report(self, file_path):
+        """
+        Callback function to open the PrintAbsenteesWindow.
+        """
+        ViewerWindow(self.master, file_path, editable=True, mode="view")
 
 class ViewerWindow(ctk.CTkToplevel):
     """

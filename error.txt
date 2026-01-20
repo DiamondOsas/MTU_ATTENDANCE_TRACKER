@@ -1,6 +1,108 @@
-Do This
-Leave the viewer gui because differnett modules aare usin it but please reduce the code for it t be more readble and simpler 
+Remove tis imprt form the func file 
+from internal.attendance.analysis.absentees_func import get_session_info, extract_absentees, save_absentees
+import os
+to use the functions add somthing like this to the func file
+import csv
+import pandas as pd
+from internal.utils.csv_handler import read_csv_robust
+
+def get_session_info(file_path):
+    """
+    Scans a CSV to find unique sessions (Date + Activity pairs).
+    Returns a dict: { 'dd/mm/yy': [{'activity': 'Name', 'col_index': int}, ...] }
+    """
+    sessions = {}
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            lines = [line.strip().split(',') for line in f.readlines()]
+
+        date_row = None
+        activity_row = None
+        
+        # Find header rows
+        for row in lines:
+            if not row: continue
+            first_cell = row[0].strip().upper()
+            if first_cell == "DATE":
+                date_row = row
+            elif first_cell == "ACTIVITY":
+                activity_row = row
+            if date_row and activity_row:
+                break
+        
+        if not date_row or not activity_row:
+            return {}
+
+        # Scan columns starting from index 3 (standard attendance format)
+        # Ensure we don't exceed the length of the shortest row
+        limit = min(len(date_row), len(activity_row))
+        
+        for idx in range(3, limit):
+            d_val = date_row[idx].strip()
+            a_val = activity_row[idx].strip()
+            
+            if d_val and a_val:
+                if d_val not in sessions:
+                    sessions[d_val] = []
+                sessions[d_val].append({'activity': a_val, 'col_index': idx})
+                
+    except Exception as e:
+        print(f"Error getting session info: {e}")
+        return {}
+
+    return sessions
+
+def extract_absentees(file_path, col_index):
+    """
+    Returns a list of students marked as absent ('x', 'X', '✗') in the specified column.
+    """
+    try:
+        # We use pandas for efficient filtering. 
+        # We assume the file has standard headers: Surname, Firstname, Matric NO.
+        # However, because of the extra 'DATE'/'ACTIVITY' rows, standard read_csv might need cleaning.
+        # It's safer to read all, then filter out the metadata rows.
+        
+        df = pd.read_csv(file_path, names=[str(i) for i in range(50)], dtype=str, on_bad_lines='skip')
+        # Rename first 3 columns for clarity (assuming standard structure)
+        df.rename(columns={'0': 'Surname', '1': 'Firstname', '2': 'Matric'}, inplace=True)
+        
+        # 1. Filter out metadata rows (DATE, ACTIVITY, or empty Surname)
+        # We keep rows where 'Surname' is not one of the keywords
+        mask_valid_rows = ~df['Surname'].str.upper().isin(['DATE', 'ACTIVITY', 'SURNAME', 'NAN', 'NONE'])
+        # Also ensure 'Surname' is not empty/null
+        mask_valid_rows &= df['Surname'].notna()
+        
+        clean_df = df[mask_valid_rows].copy()
+        
+        # 2. Check the specific column for absentee marks
+        target_col = str(col_index)
+        if target_col not in clean_df.columns:
+            return []
+
+        # Filter for absentee marks
+        absent_mask = clean_df[target_col].str.strip().isin(['x', 'X', '✗'])
+        absentees = clean_df[absent_mask]
+        
+        return absentees[['Surname', 'Firstname', 'Matric']].to_dict('records')
+
+    except Exception as e:
+        print(f"Error extracting absentees: {e}")
+        return None
+
+def save_absentees(absentees_data, file_path):
+    """Saves the absentee list to CSV or Excel."""
+    try:
+        df = pd.DataFrame(absentees_data)
+        if file_path.endswith('.xlsx'):
+            df.to_excel(file_path, index=False)
+        else:
+            df.to_csv(file_path, index=False)
+        return True
+    except Exception as e:
+        print(f"Error saving absentees: {e}")
+        return False
 
 
-YOu can do phasse 2
-No need to do phae 3 but you can make the code simpler and make it more readble for each file
+and then 
+Move the Gui in the func to the GUi file for prper understnaing
+

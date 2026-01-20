@@ -83,7 +83,7 @@ class TestChooseAbsenteeFileWindow(unittest.TestCase):
         # But simpler to just check if window.attendance_files has correct data.
         self.assertEqual(len(files), 2)
 
-    @patch('internal.absentees.abs_gui.PrintAbsenteesWindow')
+    @patch('internal.absentees.abs_func.PrintAbsenteesWindow')
     @patch('internal.absentees.abs_gui.glob.glob')
     def test_select_file_opens_next_window(self, mock_glob, MockPrintWindow):
         """Test that selecting a file opens the PrintAbsenteesWindow."""
@@ -193,7 +193,7 @@ class TestPrintAbsenteesWindow(unittest.TestCase):
         self.assertNotIn("Ahiante Paul", inserted_text) # Should be present
 
     @patch('internal.absentees.abs_func.save_absentees')
-    @patch('tkinter.filedialog.asksaveasfilename')
+    @patch('internal.absentees.abs_func.filedialog.asksaveasfilename')
     def test_export_data(self, mock_asksaveas, mock_save):
         """Test the export functionality."""
         window = PrintAbsenteesWindow(self.mock_master, self.test_file_path)

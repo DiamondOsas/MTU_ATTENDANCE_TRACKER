@@ -2,9 +2,9 @@ import customtkinter as ctk
 from tkinter import messagebox
 import os
 from datetime import date, datetime
-from internal.attendance.attendance import get_attendance_files, load_csv_file, update_attendance_sheet
+from internal.attendance.create.create_func import get_attendance_files, load_csv_file, update_attendance_sheet
 from internal.calender import CalendarDialog
-from internal.attendance.view.viewer_gui import ViewerWindow
+from internal.attendance.create.selcol_gui import SelectColumnWindow
 
 class AddAttendanceWindow(ctk.CTkToplevel):
     """
@@ -92,7 +92,7 @@ class AddAttendanceWindow(ctk.CTkToplevel):
             
             # Open Viewer to select column
             self.withdraw()
-            viewer = ViewerWindow(self, path, mode="select_column")
+            viewer = SelectColumnWindow(self, path)
             self.wait_window(viewer)
             self.deiconify()
             
