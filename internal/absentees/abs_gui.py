@@ -68,7 +68,7 @@ class ChooseAbsenteeFileWindow(ctk.CTkToplevel):
             
             self.destroy() # Close this window
             # Open the next window, passing the full file path
-            from gui.absentees.printabs import PrintAbsenteesWindow
+            from internal.absentees.abs_func import PrintAbsenteesWindow
             PrintAbsenteesWindow(self.master, full_file_path)
 
     def _on_closing(self):
