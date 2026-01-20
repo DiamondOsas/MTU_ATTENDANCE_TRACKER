@@ -92,9 +92,10 @@ class AttendanceApp(ctk.CTk):
         """
         Closes the main menu and opens the window to choose a student list to edit.
         """
-        self.withdraw()
-        from internal. import ChooseViewerWindow
-        ChooseViewerWindow(self, viewer_type="edit") # Pass a parameter to distinguish
+        print("Feature is comming soon....")
+        # self.withdraw()
+        # from internal import ChooseViewerWindow
+        # ChooseViewerWindow(self, viewer_type="edit") # Pass a parameter to distinguish
 
     def open_absentees_viewer_window(self):
         """

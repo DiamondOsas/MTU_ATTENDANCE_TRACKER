@@ -1,191 +1,155 @@
 import customtkinter as ctk
-from tkinter import messagebox
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 import calendar
 
 class CalendarDialog(ctk.CTkToplevel):
-    """
-    A simple calendar dialog for date selection.
-    This calendar allows users to select a date in DD/MM/YY format.
-    """
     def __init__(self, parent, initial_date=None):
         super().__init__(parent)
-        
-        self.parent = parent
-        self.selected_date = None
 
-        # Parse initial date if provided
+        self.parent = parent
+        self.selected_date = None  # This holds the result
+        
+        # --- Colors (Easy to change) ---
+        self.colors = {
+            "primary": "#1f6aa5",      # Selection color
+            "hover": "#144870",        # Hover color
+            "today": "#2cc985",        # Today color
+            "text": "white"            # Text color
+        }
+
+        # --- Data Setup ---
+        self._view_date = date.today().replace(day=1) # Current month being viewed
+
         if initial_date:
             try:
-                self.current_date = datetime.strptime(initial_date, '%d/%m/%y').date()
+                dt = datetime.strptime(initial_date, '%d/%m/%y').date()
+                self.selected_date = dt
+                self._view_date = dt.replace(day=1)
             except ValueError:
-                self.current_date = date.today()
-        else:
-            self.current_date = date.today()
-        
-        # Window configuration
+                pass 
+
+        # --- Window Config ---
         self.title("Select Date")
-        self.geometry("400x400")
+        self.geometry("340x400")
         self.resizable(False, False)
         
-        # Make window modal
+        # Make Modal (blocks other windows)
         self.transient(parent)
         self.grab_set()
         
-        # Create calendar UI
-        self.create_calendar_ui()
+        # --- Build UI ---
+        self._create_widgets()
+        self._update_grid()
         
-        # Center the dialog
-        self.center_dialog()
-    
-    def center_dialog(self):
-        """
-        Centers the dialog on the parent window.
-        """
+        # Center the window
+        self.after(10, self._center_window)
+
+    def _center_window(self):
         self.update_idletasks()
         x = self.parent.winfo_x() + (self.parent.winfo_width() // 2) - (self.winfo_width() // 2)
         y = self.parent.winfo_y() + (self.parent.winfo_height() // 2) - (self.winfo_height() // 2)
         self.geometry(f"+{x}+{y}")
-    
-    def create_calendar_ui(self):
-        """
-        Creates a simple calendar UI.
-        """
-        # Header with navigation
-        header_frame = ctk.CTkFrame(self)
-        header_frame.pack(fill="x", padx=10, pady=10)
+
+    def _create_widgets(self):
+        """Creates the layout once. We just update text later."""
         
-        # Previous month button
-        prev_btn = ctk.CTkButton(header_frame, text="<", width=30, command=self.prev_month)
-        prev_btn.pack(side="left", padx=5)
+        # 1. Header (Month/Year)
+        header = ctk.CTkFrame(self, fg_color="transparent")
+        header.pack(fill="x", padx=10, pady=(15, 5))
+
+        ctk.CTkButton(header, text="<", width=30, command=self._prev_month).pack(side="left")
         
-        # Month/Year label
-        self.month_label = ctk.CTkLabel(header_frame, text="", font=ctk.CTkFont(size=14, weight="bold"))
-        self.month_label.pack(side="left", expand=True)
+        self.lbl_title = ctk.CTkLabel(header, text="Month", font=("Arial", 16, "bold"))
+        self.lbl_title.pack(side="left", expand=True)
         
-        # Next month button
-        next_btn = ctk.CTkButton(header_frame, text=">", width=30, command=self.next_month)
-        next_btn.pack(side="right", padx=5)
+        ctk.CTkButton(header, text=">", width=30, command=self._next_month).pack(side="right")
+
+        # 2. Days of Week
+        days_frame = ctk.CTkFrame(self, fg_color="transparent")
+        days_frame.pack(fill="x", padx=15, pady=5)
+        for d in ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]:
+            ctk.CTkLabel(days_frame, text=d, width=40, font=("Arial", 12, "bold")).pack(side="left", expand=True)
+
+        # 3. The Date Grid (Re-usable buttons)
+        grid_frame = ctk.CTkFrame(self, fg_color="transparent")
+        grid_frame.pack(fill="both", expand=True, padx=10)
         
-        # Days header
-        days_frame = ctk.CTkFrame(self)
-        days_frame.pack(fill="x", padx=10, pady=5)
+        self.buttons = []
+        for r in range(6):
+            for c in range(7):
+                btn = ctk.CTkButton(
+                    grid_frame, text="", width=40, height=35,
+                    fg_color="transparent",
+                    command=lambda i=(r*7)+c: self._on_click(i)
+                )
+                btn.grid(row=r, column=c, padx=2, pady=2)
+                self.buttons.append(btn)
+
+        # 4. Footer
+        footer = ctk.CTkFrame(self, fg_color="transparent")
+        footer.pack(fill="x", padx=10, pady=10)
         
-        days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-        for i, day in enumerate(days):
-            day_label = ctk.CTkLabel(days_frame, text=day, width=40, anchor="center")
-            day_label.grid(row=0, column=i, padx=2, pady=2)
+        ctk.CTkButton(footer, text="Today", fg_color="transparent", border_width=1, 
+                      text_color="gray90", command=self._goto_today).pack(side="left", padx=5)
         
-        # Calendar grid
-        self.calendar_grid = ctk.CTkFrame(self)
-        self.calendar_grid.pack(fill="both", expand=True, padx=10, pady=5)
+        ctk.CTkButton(footer, text="Cancel", fg_color="transparent", text_color="red", 
+                      width=60, hover_color="#330000", command=self.destroy).pack(side="right")
         
-        # Buttons frame
-        buttons_frame = ctk.CTkFrame(self)
-        buttons_frame.pack(fill="x", padx=10, pady=10)
+        ctk.CTkButton(footer, text="OK", width=80, fg_color="green", 
+                      command=self._confirm).pack(side="right", padx=5)
+
+    def _update_grid(self):
+        """Refreshes button labels and colors."""
+        year, month = self._view_date.year, self._view_date.month
+        self.lbl_title.configure(text=f"{calendar.month_name[month]} {year}")
         
-        # Today button
-        today_btn = ctk.CTkButton(buttons_frame, text="Today", command=self.set_today)
-        today_btn.pack(side="left", padx=10)
+        # Get days
+        month_days = calendar.monthcalendar(year, month)
+        flat_days = [d for week in month_days for d in week]
         
-        # OK button
-        ok_btn = ctk.CTkButton(buttons_frame, text="OK", command=self.confirm_selection, fg_color="green")
-        ok_btn.pack(side="right", padx=10)
-        
-        # Cancel button
-        cancel_btn = ctk.CTkButton(buttons_frame, text="Cancel", command=self.destroy)
-        cancel_btn.pack(side="right", padx=5)
-        
-        # Initialize calendar
-        self.update_calendar()
-    
-    def update_calendar(self):
-        """
-        Updates the calendar display.
-        """
-        # Clear grid
-        for widget in self.calendar_grid.winfo_children():
-            widget.destroy()
-        
-        # Update month label
-        month_names = ["January", "February", "March", "April", "May", "June",
-                      "July", "August", "September", "October", "November", "December"]
-        self.month_label.configure(text=f"{month_names[self.current_date.month-1]} {self.current_date.year}")
-        
-        # Get calendar data
-        month_calendar = calendar.monthcalendar(self.current_date.year, self.current_date.month)
-        
-        # Display days
-        for week_num, week in enumerate(month_calendar):
-            for day_num, day in enumerate(week):
-                if day == 0:  # Empty cell
-                    cell = ctk.CTkLabel(self.calendar_grid, text="", width=40, height=30)
-                else:
-                    btn = ctk.CTkButton(
-                        self.calendar_grid,
-                        text=str(day),
-                        width=40,
-                        height=30,
-                        command=lambda d=day: self.select_day(d)
-                    )
-                    
-                    # Highlight today
-                    if (day == date.today().day and 
-                        self.current_date.month == date.today().month and 
-                        self.current_date.year == date.today().year):
-                        btn.configure(fg_color=("gray75", "gray25"))
-                    
-                    # Highlight selected date
-                    if (self.selected_date and 
-                        day == self.selected_date.day and
-                        self.current_date.month == self.selected_date.month and
-                        self.current_date.year == self.selected_date.year):
-                        btn.configure(fg_color=("blue", "darkblue"))
-                    
-                    cell = btn
+        today = date.today()
+
+        for i, btn in enumerate(self.buttons):
+            if i < len(flat_days) and flat_days[i] != 0:
+                d_val = flat_days[i]
+                d_obj = date(year, month, d_val)
                 
-                cell.grid(row=week_num+1, column=day_num, padx=2, pady=2)
-    
-    def select_day(self, day):
-        """
-        Selects a day and updates the calendar.
-        """
-        self.selected_date = date(self.current_date.year, self.current_date.month, day)
-        self.update_calendar()
-    
-    def confirm_selection(self):
-        """
-        Confirms the date selection.
-        """
+                btn.configure(text=str(d_val), state="normal")
+                
+                # Logic for coloring buttons
+                if d_obj == self.selected_date:
+                    btn.configure(fg_color=self.colors["primary"], hover_color=self.colors["hover"])
+                elif d_obj == today:
+                    btn.configure(fg_color=self.colors["today"], hover_color="#26ad73")
+                else:
+                    btn.configure(fg_color="transparent", hover_color="gray40")
+            else:
+                btn.configure(text="", fg_color="transparent", state="disabled")
+
+    def _on_click(self, index):
+        """Handle button click based on index."""
+        btn = self.buttons[index]
+        day_text = btn.cget("text")
+        if day_text:
+            self.selected_date = date(self._view_date.year, self._view_date.month, int(day_text))
+            self._update_grid()
+
+    def _prev_month(self):
+        first = self._view_date.replace(day=1)
+        self._view_date = (first - timedelta(days=1)).replace(day=1)
+        self._update_grid()
+
+    def _next_month(self):
+        self._view_date = (self._view_date.replace(day=28) + timedelta(days=4)).replace(day=1)
+        self._update_grid()
+
+    def _goto_today(self):
+        self.selected_date = date.today()
+        self._view_date = date.today().replace(day=1)
+        self._update_grid()
+
+    def _confirm(self):
         if self.selected_date:
             self.destroy()
         else:
-            messagebox.showwarning("No Selection", "Please select a date first.")
-    
-    def prev_month(self):
-        """
-        Goes to the previous month.
-        """
-        if self.current_date.month == 1:
-            self.current_date = self.current_date.replace(year=self.current_date.year-1, month=12)
-        else:
-            self.current_date = self.current_date.replace(month=self.current_date.month-1)
-        self.update_calendar()
-    
-    def next_month(self):
-        """
-        Goes to the next month.
-        """
-        if self.current_date.month == 12:
-            self.current_date = self.current_date.replace(year=self.current_date.year+1, month=1)
-        else:
-            self.current_date = self.current_date.replace(month=self.current_date.month+1)
-        self.update_calendar()
-    
-    def set_today(self):
-        """
-        Sets the date to today.
-        """
-        self.current_date = date.today()
-        self.selected_date = date.today()
-        self.update_calendar()
+            print("Please select a date")
