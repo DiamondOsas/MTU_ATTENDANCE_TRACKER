@@ -85,15 +85,15 @@ class AttendanceApp(ctk.CTk):
         """
         self.withdraw()
         # We import here to avoid a circular import at the module level.
-        from internal.attendance.view.viewer_gui import ChooseViewerWindow
-        ChooseViewerWindow(self, viewer_type="view")  #
+        from internal.attendance.view.viewer_gui import ChooseViewerFileWindow
+        ChooseViewerFileWindow(self)  #
         
     def open_edit_students_window(self):
         """
         Closes the main menu and opens the window to choose a student list to edit.
         """
         self.withdraw()
-        from internal.attendance import ChooseViewerWindow
+        from internal. import ChooseViewerWindow
         ChooseViewerWindow(self, viewer_type="edit") # Pass a parameter to distinguish
 
     def open_absentees_viewer_window(self):

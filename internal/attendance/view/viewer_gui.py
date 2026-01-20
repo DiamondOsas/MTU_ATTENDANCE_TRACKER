@@ -43,7 +43,7 @@ class DataTable(ctk.CTkFrame):
         return pd.DataFrame(data, columns=headers)
 
 
-class ChooseAbsenteeFileWindow(ChooseCSVWindow):
+class ChooseViewerFileWindow(ChooseCSVWindow):
     """
     Wrapper for ChooseCSVWindow to select attendance files and open the absentee report.
     """
