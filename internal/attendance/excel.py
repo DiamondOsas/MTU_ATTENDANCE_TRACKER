@@ -96,15 +96,6 @@ class ExcelWindow(ctk.CTkToplevel):
         else:
             messagebox.showerror("Error", "Failed to save file.")
 
-    def confirm_selection(self):
-        col_name = self.col_var.get()
-        if col_name and col_name in self.df.columns:
-            self.selected_column_data = self.df[col_name].dropna().tolist()
-            self.destroy()
-        else:
-            messagebox.showerror("Error", "Invalid column selected.")
-
-
     def export_file(self):
         level_name = os.path.splitext(os.path.basename(self.file_path))[0]
         filename =f"{level_name}_ATTENDANCE"
@@ -122,14 +113,10 @@ class ExcelWindow(ctk.CTkToplevel):
                 print(f"Error saving File: {e}")
 
     def on_close(self):
+        self.parent.deiconify()
         self.destroy()
 
-    def destroy(self):
-        # Ensure parent window reappears
-        if self.parent:
-            try: self.parent.deiconify()
-            except: pass
-        super().destroy()
+
 
 
 

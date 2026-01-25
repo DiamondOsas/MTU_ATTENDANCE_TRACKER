@@ -1,6 +1,4 @@
 Code in a very consicce weay
 and tell me how you went to take the actions 
 Expand these fectures of excel.py to be more comprehensive 
-1. remove the mode= view beacasue the editable = bool is enough to show to determine like i a  
- ExcelWindow(self.master, file_path, editable=False, mode="view")
-
+1. Add the 

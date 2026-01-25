@@ -10,6 +10,10 @@ For the file maintiaer updated make sure that the files update in realtime even 
 
 CRITICAL
 1. Make it to be compatible on common man laptop with speed and make an installer for it
+2. BE lazy
+a. Make the lines of the stuff to be thick
+
+
 
 ESSIEN
 1. Make it to have an online database using (supabase)
