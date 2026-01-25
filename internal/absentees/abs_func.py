@@ -3,6 +3,18 @@ import pandas as pd
 from internal.utils.csv_handler import read_csv_robust
 import os
 
+def load_attendance_file(file_path):
+    """
+    Loads the attendance CSV in a raw format suitable for processing.
+    """
+    try:
+        # Read with dummy headers to capture all structure
+        df = pd.read_csv(file_path, names=[str(i) for i in range(50)], dtype=str, on_bad_lines='skip')
+        return df
+    except Exception as e:
+        print(f"Error loading file: {e}")
+        return None
+
 def get_session_info(file_path):
     """
     Scans a CSV to find unique sessions (Date + Activity pairs).
@@ -31,7 +43,6 @@ def get_session_info(file_path):
             return {}
 
         # Scan columns starting from index 3 (standard attendance format)
-        # Ensure we don't exceed the length of the shortest row
         limit = min(len(date_row), len(activity_row))
         
         for idx in range(3, limit):
@@ -49,27 +60,32 @@ def get_session_info(file_path):
 
     return sessions
 
-def extract_absentees(file_path, col_index):
+def extract_absentees(file_path, col_index, df=None):
     """
     Returns a list of students marked as absent ('x', 'X', '✗') in the specified column.
+    Can accept a pre-loaded raw DataFrame (df) to save time.
     """
     try:
-        # We use pandas for efficient filtering. 
-        # We assume the file has standard headers: Surname, Firstname, Matric NO.
-        # However, because of the extra 'DATE'/'ACTIVITY' rows, standard read_csv might need cleaning.
-        # It's safer to read all, then filter out the metadata rows.
+        if df is None:
+            df = load_attendance_file(file_path)
         
-        df = pd.read_csv(file_path, names=[str(i) for i in range(50)], dtype=str, on_bad_lines='skip')
+        if df is None: return None
+
+        # Work on a copy to avoid side effects if df is reused
+        local_df = df.copy()
+
         # Rename first 3 columns for clarity (assuming standard structure)
-        df.rename(columns={'0': 'Surname', '1': 'Firstname', '2': 'Matric NO'}, inplace=True)
+        # Ensure we have enough columns
+        if len(local_df.columns) < 3:
+            return []
+            
+        local_df.rename(columns={'0': 'Surname', '1': 'Firstname', '2': 'Matric NO'}, inplace=True)
         
         # 1. Filter out metadata rows (DATE, ACTIVITY, or empty Surname)
-        # We keep rows where 'Surname' is not one of the keywords
-        mask_valid_rows = ~df['Surname'].str.upper().isin(['DATE', 'ACTIVITY', 'SURNAME', 'NAN', 'NONE'])
-        # Also ensure 'Surname' is not empty/null
-        mask_valid_rows &= df['Surname'].notna()
+        mask_valid_rows = ~local_df['Surname'].str.upper().isin(['DATE', 'ACTIVITY', 'SURNAME', 'NAN', 'NONE'])
+        mask_valid_rows &= local_df['Surname'].notna()
         
-        clean_df = df[mask_valid_rows].copy()
+        clean_df = local_df[mask_valid_rows].copy()
         
         # 2. Check the specific column for absentee marks
         target_col = str(col_index)
@@ -77,6 +93,8 @@ def extract_absentees(file_path, col_index):
             return []
 
         # Filter for absentee marks
+        # Ensure column is string
+        clean_df[target_col] = clean_df[target_col].astype(str)
         absent_mask = clean_df[target_col].str.strip().isin(['x', 'X', '✗'])
         absentees = clean_df[absent_mask]
         

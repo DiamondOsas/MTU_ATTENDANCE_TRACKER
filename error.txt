@@ -1,6 +1,5 @@
-Code in a very consicce weay
+Code in a vey easy way to read i dont care how long it is
 and tell me how you went to take the actions 
 Expand these fectures of excel.py to be more comprehensive 
 
-1. Add more functionlity in the when eidtable=True  gui such that i should be able to click the rows and colums and delete and add them like excel 
-2. Put a proper header like excel where functionality like cpy cut and other things requrierd are displayd there. It should not have too much so that i doenst take too much code but it should be cosice
+How do i make the outline an inline of all the rows that contian data to be thivker 
