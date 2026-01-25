@@ -1,7 +1,7 @@
 import customtkinter as ctk
 import pandas as pd
 import os 
-from tkinter import messagebox
+from tkinter import messagebox, filedialog
 from tksheet import Sheet
 from internal.utils.csv_handler import read_csv_robust, save_csv, get_csv_columns, get_column_data
 
@@ -84,6 +84,8 @@ class ExcelWindow(ctk.CTkToplevel):
         
         if self.editable:
             ctk.CTkButton(btn_frame, text="Save Changes", command=self.save_changes).pack(side="right", padx=5)
+        else:
+            ctk.CTkButton(btn_frame, text="Export File",command=self.export_file).pack(side="right", padx=5)
 
     def save_changes(self):
         """Saves current table data to the CSV."""
@@ -101,6 +103,23 @@ class ExcelWindow(ctk.CTkToplevel):
             self.destroy()
         else:
             messagebox.showerror("Error", "Invalid column selected.")
+
+
+    def export_file(self):
+        level_name = os.path.splitext(os.path.basename(self.file_path))[0]
+        filename =f"{level_name}_ATTENDANCE"
+        filepath = filedialog.asksaveasfile(
+            mode="w",
+            confirmoverwrite="t",
+            filetypes=[("Excel File", "*xlsx")],
+            title="Export File to Computer",
+            initialfile=filename
+        )
+        if filename:
+            try:
+                print("Trying to save file")
+            except Exception as e:
+                print(f"Error saving File: {e}")
 
     def on_close(self):
         self.destroy()

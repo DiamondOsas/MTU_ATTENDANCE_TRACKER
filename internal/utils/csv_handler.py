@@ -26,8 +26,8 @@ def read_csv_robust(file_path):
         print(f"Error reading {file_path}: {e}")
         return pd.DataFrame()
 
-def save_csv(file_path, df):
     """Saves a DataFrame to CSV."""
+def save_csv(file_path, df):
     try:
         df.to_csv(file_path, index=False)
         return True
