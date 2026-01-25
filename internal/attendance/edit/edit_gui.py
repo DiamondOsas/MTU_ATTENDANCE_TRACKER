@@ -19,4 +19,4 @@ class ChooseEditorFileWindow(ChooseCSVWindow):
         """
         Callback function to open the PrintAbsenteesWindow.
         """
-        ExcelWindow(self.master, file_path, editable=False)
+        ExcelWindow(self.master, file_path, editable=True)
