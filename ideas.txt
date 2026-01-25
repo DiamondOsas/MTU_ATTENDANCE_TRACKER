@@ -15,6 +15,11 @@ a. Make the lines of the stuff to be thick
 
 
 
+
+1. Add them to be able to print people that attended 
+2. Print to number of times a person missed for a week and folder
+
+
 ESSIEN
 1. Make it to have an online database using (supabase)
 2. Make it that one will be able to print absenttes over a period of time
