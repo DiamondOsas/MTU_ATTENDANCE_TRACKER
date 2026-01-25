@@ -1,8 +1,6 @@
-Please explain this error and tell ma how i can fix it. DOnt code just explian 
+Code in a very consicce weay
+and tell me how you went to take the actions 
+Expand these fectures of excel.py to be more comprehensive 
+1. remove the mode= view beacasue the editable = bool is enough to show to determine like i a  
+ ExcelWindow(self.master, file_path, editable=False, mode="view")
 
-Creatng backup today at C:\Users\user\AppData\Roaming\MTU_BACKUP\25-01-2026
-Error performing daily backup: [WinError 183] Cannot create a file when that file already exists: 'C:\\Users\\user\\AppData\\Roaming\\MTU_BACKUP\\25-01-2026'
-
-
-Creatng backup today at C:\Users\user\AppData\Roaming\MTU_BACKUP\25-01-2026
-Error performing daily backup: [WinError 183] Cannot create a file when that file already exists: 'C:\\Users\\user\\AppData\\Roaming\\MTU_BACKUP\\25-01-2026'

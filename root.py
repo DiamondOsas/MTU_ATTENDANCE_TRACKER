@@ -48,20 +48,24 @@ class AttendanceApp(ctk.CTk):
         self.add_attendance_button = ctk.CTkButton(self, text="Add Attendance", command=self.open_add_attendance_window)
         self.add_attendance_button.grid(row=4, column=0, padx=40, pady=10, sticky="ew")
 
+        self.edit_attendace_button = ctk.CTkButton(self, text="Edit Attendace", command=self.open_edit_attendance_window)
+        self.edit_attendace_button.grid(row=5, column=0, padx=40, pady=10, sticky="ew")
+
+
         self.view_attendance_button = ctk.CTkButton(self, text="View Attendance", command=self.open_viewer_window)
-        self.view_attendance_button.grid(row=5, column=0, padx=40, pady=10, sticky="ew")
+        self.view_attendance_button.grid(row=6, column=0, padx=40, pady=10, sticky="ew")
 
         self.print_absentees_button = ctk.CTkButton(self, text="Print Absentees", command=self.open_absentees_viewer_window)
-        self.print_absentees_button.grid(row=6, column=0, padx=40, pady=10, sticky="ew")
+        self.print_absentees_button.grid(row=7, column=0, padx=40, pady=10, sticky="ew")
 
         self.settings_button = ctk.CTkButton(self, text="Settings", command=self.placeholder_command)
-        self.settings_button.grid(row=7, column=0, padx=40, pady=10, sticky="ew")
+        self.settings_button.grid(row=8, column=0, padx=40, pady=10, sticky="ew")
 
         self.restore_button = ctk.CTkButton(self, text="Restore Database Backup", command=self.open_revert_window, fg_color="#7743F2", hover_color="#B71C1C")
-        self.restore_button.grid(row=8, column=0, padx=40, pady=10, sticky="ew")
+        self.restore_button.grid(row=9, column=0, padx=40, pady=10, sticky="ew")
 
 
-    def open_register_window(self):
+    def open_register_window(self): 
         """
         Closes the main menu and opens the student registration window
         """
@@ -79,11 +83,20 @@ class AttendanceApp(ctk.CTk):
         from internal.attendance.create.create_gui import AddAttendanceWindow
         AddAttendanceWindow(self)
 
+    def open_edit_attendance_window(self):
+        """
+        Opens the window which is used in editing the Attendance in DB/Attendance
+        """
+        print("Implemeinting Feature")
+        from internal.attendance.edit.edit_gui import ChooseEditorFileWindow
+        ChooseEditorFileWindow(self)
+
+
     def open_viewer_window(self):
         """
         Closes the main menu and opens the attendance viewer window.
         """
-        self.withdraw()
+        #self.withdraw()
         # We import here to avoid a circular import at the module level.
         from internal.attendance.view.viewer_gui import ChooseViewerFileWindow
         ChooseViewerFileWindow(self)  #
@@ -103,7 +116,7 @@ class AttendanceApp(ctk.CTk):
         """
         self.withdraw()
         from internal.absentees.abs_gui import ChooseAbsenteeFileWindow
-        absentees_app = ChooseAbsenteeFileWindow(self)
+        ChooseAbsenteeFileWindow(self)
 
     def open_revert_window(self):
         """
@@ -111,7 +124,7 @@ class AttendanceApp(ctk.CTk):
         """
         self.withdraw()
         from internal.revertdb import RevertDBWindow
-        revert_app = RevertDBWindow(self)
+        RevertDBWindow(self)
 
     def placeholder_command(self):
         """

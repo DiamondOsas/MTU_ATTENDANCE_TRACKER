@@ -1,8 +1,10 @@
 from internal.choosecsv import ChooseCSVWindow
-from internal.attendance.excel import ExcelWindow
 import os
+from internal.attendance.excel import ExcelWindow
 
-class ChooseViewerFileWindow(ChooseCSVWindow):
+
+
+class ChooseEditorFileWindow(ChooseCSVWindow):
     """
     Wrapper for ChooseCSVWindow to select attendance files and open the absentee report.
     """
@@ -18,4 +20,3 @@ class ChooseViewerFileWindow(ChooseCSVWindow):
         Callback function to open the PrintAbsenteesWindow.
         """
         ExcelWindow(self.master, file_path, editable=False)
-
