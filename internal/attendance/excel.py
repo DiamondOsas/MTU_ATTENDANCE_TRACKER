@@ -6,6 +6,7 @@ from tksheet import Sheet
 from typing import Optional, List, Tuple, Any
 
 from internal.utils.csv_handler import read_csv_robust, save_csv
+from internal.utils.excel_styler import apply_excel_styling
 
 class DataTable(ctk.CTkFrame):
     """
@@ -274,7 +275,13 @@ class ExcelWindow(ctk.CTkToplevel):
                 df = self.table.get_dataframe()
                 # Default to openpyxl for xlsx
                 df.to_excel(filepath, index=False) 
-                messagebox.showinfo("Export Successful", f"Saved to:\n{filepath}")
+                
+                # Apply styling
+                if apply_excel_styling(filepath):
+                    messagebox.showinfo("Export Successful", f"Saved and styled:\n{filepath}")
+                else:
+                    messagebox.showinfo("Export Successful", f"Saved (styling failed):\n{filepath}")
+
             except Exception as e:
                 messagebox.showerror("Export Error", f"An error occurred while exporting:\n{e}")
 
