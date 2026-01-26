@@ -51,6 +51,7 @@ class PrintAbsenteesWindow(ctk.CTkToplevel):
         
         if not self.sessions:
             ctk.CTkLabel(self, text="No attendance data found in this file.", text_color="red").grid(row=1, column=0, pady=20)
+            ctk.CTkButton(self, text="Back to Menu", command=self.close_window).grid(row=7, column=0, pady=20)
             return
 
         # --- UI Components ---

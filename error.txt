@@ -1,5 +1,0 @@
-Code in a vey easy way to read i dont care how long it is
-and tell me how you went to take the actions 
-Expand these fectures of excel.py to be more comprehensive 
-
-How do i make the outline an inline of all the rows that contian data to be thivker 

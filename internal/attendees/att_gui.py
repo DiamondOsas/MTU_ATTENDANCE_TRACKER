@@ -8,7 +8,7 @@ from internal.attendees.att_func import get_session_info, extract_attendees, sav
 from internal.calender import CalendarDialog
 from internal.utils.excel_styler import apply_excel_styling
 
-class ChooseAbsenteeFileWindow(ChooseCSVWindow):
+class ChooseAttendeesFileWindow(ChooseCSVWindow):
     """
     Wrapper for ChooseCSVWindow to select attendance files and open the absentee report.
     """
@@ -52,6 +52,7 @@ class PrintAttendeesWindow(ctk.CTkToplevel):
         
         if not self.sessions:
             ctk.CTkLabel(self, text="No attendance data found in this file.", text_color="red").grid(row=1, column=0, pady=20)
+            ctk.CTkButton(self, text="Back to Menu", command=self.close_window).grid(row=7, column=0, pady=20)
             return
 
         # --- UI Components ---
@@ -83,7 +84,7 @@ class PrintAttendeesWindow(ctk.CTkToplevel):
         self.textbox_result.configure(state="disabled")
 
         # 5. Back Button
-        ctk.CTkButton(self, text="Back to Menu", command=self.close_window).grid(row=7, column=0, pady=20)
+        back_button = ctk.CTkButton(self, text="Back to Menu", command=self.close_window).grid(row=7, column=0, pady=20)
 
     def close_window(self):
         self.master.deiconify()

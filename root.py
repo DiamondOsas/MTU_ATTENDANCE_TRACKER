@@ -55,14 +55,17 @@ class AttendanceApp(ctk.CTk):
         self.view_attendance_button = ctk.CTkButton(self, text="View Attendance", command=self.open_viewer_window)
         self.view_attendance_button.grid(row=6, column=0, padx=40, pady=10, sticky="ew")
 
+        self.print_attendees_button = ctk.CTkButton(self, text="Print Attendees", command=self.open_attendees_viewer_window)
+        self.print_attendees_button.grid(row=7, column=0, padx=40, pady=10, sticky="ew")
+
         self.print_absentees_button = ctk.CTkButton(self, text="Print Absentees", command=self.open_absentees_viewer_window)
-        self.print_absentees_button.grid(row=7, column=0, padx=40, pady=10, sticky="ew")
+        self.print_absentees_button.grid(row=8, column=0, padx=40, pady=10, sticky="ew")
 
         self.settings_button = ctk.CTkButton(self, text="Settings", command=self.placeholder_command)
-        self.settings_button.grid(row=8, column=0, padx=40, pady=10, sticky="ew")
+        self.settings_button.grid(row=9, column=0, padx=40, pady=10, sticky="ew")
 
         self.restore_button = ctk.CTkButton(self, text="Restore Database Backup", command=self.open_revert_window, fg_color="#7743F2", hover_color="#B71C1C")
-        self.restore_button.grid(row=9, column=0, padx=40, pady=10, sticky="ew")
+        self.restore_button.grid(row=10, column=0, padx=40, pady=10, sticky="ew")
 
 
     def open_register_window(self): 
@@ -87,9 +90,13 @@ class AttendanceApp(ctk.CTk):
         """
         Opens the window which is used in editing the Attendance in DB/Attendance
         """
-        print("Implemeinting Feature")
         from internal.attendance.edit.edit_gui import ChooseEditorFileWindow
         ChooseEditorFileWindow(self)
+    
+    def open_attendees_viewer_window(self):
+        self.withdraw()
+        from internal.attendees.att_gui import ChooseAttendeesFileWindow
+        ChooseAttendeesFileWindow(self)
 
 
     def open_viewer_window(self):
