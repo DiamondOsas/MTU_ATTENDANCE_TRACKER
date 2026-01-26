@@ -157,6 +157,7 @@ class PrintAttendeesWindow(ctk.CTkToplevel):
             activities = self.sessions[d_str]
             for act in activities:
                 col_idx = act['col_index']
+                global act_name
                 act_name = act['activity']
                 
                 # Pass pre-loaded df
@@ -215,7 +216,7 @@ class PrintAttendeesWindow(ctk.CTkToplevel):
                 for date_str, group_df in df.groupby('Date'):
                     # Safe filename
                     safe_date = str(date_str).replace("/", "-")
-                    filename = f"{level_name}_attendees_{safe_date}.xlsx"
+                    filename = f"{level_name}_ATTENDEES_{safe_date}_{act_name}.xlsx"
                     full_path = os.path.join(folder_path, filename)
                     
                     # Reorder cols
@@ -234,7 +235,7 @@ class PrintAttendeesWindow(ctk.CTkToplevel):
         else:
             # Single file export (Existing logic)
             s_str = self.start_date.strftime("%d-%m-%y")
-            filename = f"{level_name}_attendees_{s_str}"
+            filename = f"{level_name}_ATTENDEES_{s_str}_{act_name}"
             
             file_path = filedialog.asksaveasfilename(
                 defaultextension=".xlsx",

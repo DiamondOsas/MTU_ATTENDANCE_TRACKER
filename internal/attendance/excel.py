@@ -260,7 +260,7 @@ class ExcelWindow(ctk.CTkToplevel):
 
     def export_file(self):
         """Exports the current data to an Excel file."""
-        level_name = os.path.splitext(os.path.basename(self.file_path))[0]
+        level_name = os.path.splitext(os.path.basename(self.file_path))[0].upper()
         suggested_name = f"{level_name}_ATTENDANCE.xlsx"
         
         filepath = filedialog.asksaveasfilename(

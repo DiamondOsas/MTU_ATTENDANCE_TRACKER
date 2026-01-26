@@ -156,7 +156,9 @@ class PrintAbsenteesWindow(ctk.CTkToplevel):
             activities = self.sessions[d_str]
             for act in activities:
                 col_idx = act['col_index']
+                global act_name
                 act_name = act['activity']
+                
                 
                 # Pass pre-loaded df
                 absentees = extract_absentees(self.file_path, col_idx, df=df)
@@ -194,7 +196,7 @@ class PrintAbsenteesWindow(ctk.CTkToplevel):
     def export_data(self):
         if not self.current_absentees: return
 
-        level_name = os.path.splitext(os.path.basename(self.file_path))[0]
+        level_name = os.path.splitext(os.path.basename(self.file_path))[0].upper()
         
         # Check if we are in range mode with potential for multiple dates
         if self.start_date != self.end_date:
@@ -214,7 +216,7 @@ class PrintAbsenteesWindow(ctk.CTkToplevel):
                 for date_str, group_df in df.groupby('Date'):
                     # Safe filename
                     safe_date = str(date_str).replace("/", "-")
-                    filename = f"{level_name}_Absentees_{safe_date}.xlsx"
+                    filename = f"{level_name}_ABSENTEES_{safe_date}_{act_name}.xlsx"
                     full_path = os.path.join(folder_path, filename)
                     
                     # Reorder cols
@@ -233,7 +235,7 @@ class PrintAbsenteesWindow(ctk.CTkToplevel):
         else:
             # Single file export (Existing logic)
             s_str = self.start_date.strftime("%d-%m-%y")
-            filename = f"{level_name}_Absentees_{s_str}"
+            filename = f"{level_name}_ABSENTEES_{s_str}_{act_name}"
             
             file_path = filedialog.asksaveasfilename(
                 defaultextension=".xlsx",
