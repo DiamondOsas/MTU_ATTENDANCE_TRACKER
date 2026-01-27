@@ -37,7 +37,7 @@ def prepare_attendance_files():
         try:
             # 1. Read Source Students
             source_students = {}
-            with open(source_path, mode='r', newline='', encoding='utf-8') as infile:
+            with open(source_path, mode='r', newline='', encoding='utf-8-sig') as infile:
                 reader = csv.reader(infile)
                 next(reader, None)  # Skip header
                 # Store student data using (Surname, Firstname, Matric) as a unique ID
@@ -48,7 +48,7 @@ def prepare_attendance_files():
 
             # 2. If Attendance Sheet doesn't exist, create it from scratch
             if not dest_path.exists():
-                with open(dest_path, mode='w', newline='', encoding='utf-8') as outfile:
+                with open(dest_path, mode='w', newline='', encoding='utf-8-sig') as outfile:
                     writer = csv.writer(outfile)
                     writer.writerows([
                         ["Surname", "Firstname", "Matric NO"],
@@ -63,7 +63,7 @@ def prepare_attendance_files():
                 continue
 
             # 3. If it exists, append new students only
-            with open(dest_path, mode='r', newline='', encoding='utf-8') as infile:
+            with open(dest_path, mode='r', newline='', encoding='utf-8-sig') as infile:
                 lines = list(csv.reader(infile))
 
             # Analyze existing file
@@ -87,7 +87,7 @@ def prepare_attendance_files():
             if not has_activity_row:
                 print(f"Reformatting to add ACTIVITY row: {file_name}")
                 # If structure is wrong, we rewrite the whole file safely
-                with open(dest_path, mode='w', newline='', encoding='utf-8') as outfile:
+                with open(dest_path, mode='w', newline='', encoding='utf-8-sig') as outfile:
                     writer = csv.writer(outfile)
                     writer.writerows([
                         ["Surname", "Firstname", "Matric NO"],
@@ -103,7 +103,7 @@ def prepare_attendance_files():
                     writer.writerows(new_students)
             
             elif new_students:
-                with open(dest_path, mode='a', newline='', encoding='utf-8') as append_file:
+                with open(dest_path, mode='a', newline='', encoding='utf-8-sig') as append_file:
                     writer = csv.writer(append_file)
                     writer.writerows(new_students)
                 print(f"Appended {len(new_students)} new students to {file_name}")
@@ -167,7 +167,7 @@ def update_attendance_sheet(attendance_file_name: str, program_type: str, date: 
 
     try:
         # Load entire sheet
-        with open(file_path, 'r', newline='', encoding='utf-8') as f:
+        with open(file_path, 'r', newline='', encoding='utf-8-sig') as f:
             lines = list(csv.reader(f))
 
         # --- Step 1: locate key rows ---
@@ -229,7 +229,7 @@ def update_attendance_sheet(attendance_file_name: str, program_type: str, date: 
                 row.append('')
 
         # --- Step 5: Save ---
-        with open(file_path, 'w', newline='', encoding='utf-8') as f:
+        with open(file_path, 'w', newline='', encoding='utf-8-sig') as f:
             writer = csv.writer(f)
             writer.writerows(lines)
             
