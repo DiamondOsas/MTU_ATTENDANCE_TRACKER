@@ -148,14 +148,9 @@ class PrintRecordsWindow(ctk.CTkToplevel):
 
     def export_data(self):
         file_name = os.path.basename(self.file_path)
-
         name_without_ext = os.path.splitext(file_name)[0]
-
         level_name = str(name_without_ext).upper()
-        
-        level_name = os.path.splitext(os.path.basename(self.file_path))[0].upper()
-        
-        
+    
         if not self.current_records: return
        
         
