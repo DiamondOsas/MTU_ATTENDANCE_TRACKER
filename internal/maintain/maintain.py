@@ -6,6 +6,7 @@ from pathlib import Path
 from datetime import datetime
 #Self Explantory
 EXPECTED_HEADER = ["Surname", "Firstname", "Matric NO"]
+attendance_dir = os.path.join(os.path.dirname(__file__), "..", "..", "db", "allstudents")
 
 def _get_documents_folder() -> Path:
     """
@@ -76,6 +77,33 @@ except Exception as e:
     print(f"Error performing daily backup: {e}")
 
         
+def create_attendance_mtu():
+    documents_path= _get_documents_folder()
+
+    folder = documents_path / "ATTENDENCE_MTU"
+
+    folder.mkdir(parents=True, exist_ok=True)
+
+    try:
+        for attendance_file in Path(attendance_dir).glob("*.csv"):
+            foldername = attendance_file.stem.upper()
+
+            # Create a subfolder for this attendance file
+            subfolder = folder / foldername
+            subfolder.mkdir(parents=True, exist_ok=True)
+            # I know this is a verry stupid way to implemnet this I hope someone will refactor later
+            
+            sub_subfolder1 = subfolder / "ATTENDEES"
+            sub_subfolder2 = subfolder / "ABSENTEES"
+            sub_subfolder3 = subfolder / "REPORT"
+
+            sub_subfolder1.mkdir(parents=True, exist_ok=True)
+            sub_subfolder2.mkdir(parents=True, exist_ok=True)
+            sub_subfolder3.mkdir(parents=True, exist_ok=True)
+            print("Created Attendance Folders")
+    except Exception as e:
+    
+        print(f"Error creating attendance subfolders: {e}")
 
 def maintain_student_data_files():
     """
@@ -96,6 +124,7 @@ def maintain_student_data_files():
     """
     
     perform_daily_backup()
+    create_attendance_mtu()
 
     internal_data_dir = Path("db") 
 
