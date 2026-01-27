@@ -44,6 +44,7 @@ class PrintRecordsWindow(ctk.CTkToplevel):
 
         self.sessions = get_session_info(self.file_path)
         
+        
         if not self.sessions:
             ctk.CTkLabel(self, text="No attendance data found.", text_color="red").grid(row=1, column=0, pady=20)
             ctk.CTkButton(self, text="Back to Menu", command=self.close_window).grid(row=7, column=0, pady=20)
@@ -146,8 +147,10 @@ class PrintRecordsWindow(ctk.CTkToplevel):
         self.textbox_result.configure(state="disabled")
 
     def export_data(self):
-        if not self.current_records: return
         level_name = os.path.splitext(os.path.basename(self.file_path))[0].upper()
+        
+        if not self.current_records: return
+       
         
         if self.start_date != self.end_date:
             folder_path = filedialog.askdirectory(title="Select Folder to Save Files")
