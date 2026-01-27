@@ -7,7 +7,7 @@ from internal.choosecsv import ChooseCSVWindow
 from internal.records.records_func import get_session_info, extract_records, load_attendance_file
 from internal.calender import CalendarDialog
 from internal.utils.excel_styler import apply_excel_styling
-
+from internal.utils.general import get_target_dir
 class ChooseRecordFileWindow(ChooseCSVWindow):
     def __init__(self, master, record_type, target_marks, export_prefix):
         self.record_type = record_type
@@ -167,7 +167,8 @@ class PrintRecordsWindow(ctk.CTkToplevel):
         else:
             act_name = self.current_records[0]['Activity'] if self.current_records else "REPORT"
             filename = f"{level_name}_{self.export_prefix}_{self.start_date.strftime('%d-%m-%y')}_{act_name}"
-            file_path = filedialog.asksaveasfilename(defaultextension=".xlsx", filetypes=[("Excel file", "*.xlsx"), ("CSV file", "*.csv")], initialfile=filename)
+            target_dir = get_target_dir(level_name, self.export_prefix)
+            file_path = filedialog.asksaveasfilename(defaultextension=".xlsx", filetypes=[("Excel file", "*.xlsx"), ("CSV file", "*.csv")], initialfile=filename, initialdir=target_dir)
             if file_path:
                 try:
                     df = pd.DataFrame(self.current_records)

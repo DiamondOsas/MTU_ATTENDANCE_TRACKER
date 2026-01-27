@@ -6,7 +6,7 @@ from tksheet import Sheet
 from typing import Optional, List, Tuple, Any
 
 from internal.utils.csv_handler import read_csv_robust, save_csv
-
+from internal.utils.general import get_target_dir
 from internal.utils.excel_styler import apply_excel_styling
 
 class DataTable(ctk.CTkFrame):
@@ -267,13 +267,15 @@ class ExcelWindow(ctk.CTkToplevel):
         """Exports the current data to an Excel file."""
         level_name = os.path.splitext(os.path.basename(self.file_path))[0].upper()
         suggested_name = f"{level_name}_ATTENDANCE.xlsx"
-        
+        target_dir = get_target_dir(level_name, "REPORT")
         filepath = filedialog.asksaveasfilename(
             defaultextension=".xlsx",
             filetypes=[("Excel File", "*.xlsx")],
             title="Export File to Computer",
+            initialdir=target_dir,
             initialfile=suggested_name
         )
+
         
         if filepath:
             try:

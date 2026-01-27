@@ -80,7 +80,7 @@ except Exception as e:
 def create_attendance_mtu():
     documents_path= _get_documents_folder()
 
-    folder = documents_path / "ATTENDENCE_MTU"
+    folder = documents_path / "ATTENDANCE_MTU"
 
     folder.mkdir(parents=True, exist_ok=True)
 
