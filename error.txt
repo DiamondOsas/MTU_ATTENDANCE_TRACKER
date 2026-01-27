@@ -1,0 +1,12 @@
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python313\Lib\tkinter\__init__.py", line 2068, in __call__
+    return self.func(*args)
+           ~~~~~~~~~^^^^^^^
+TypeError: RegisterWindow.update_coll() takes 1 positional argument but 4 were given
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python313\Lib\tkinter\__init__.py", line 2068, in __call__
+    return self.func(*args)
+           ~~~~~~~~~^^^^^^^
+TypeError: RegisterWindow.update_level() takes 1 positional argument but 4 were given

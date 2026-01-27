@@ -76,7 +76,7 @@ def extract_absentees(file_path, col_index, df=None):
 
         # Rename first 3 columns for clarity (assuming standard structure)
         # Ensure we have enough columns
-        if len(local_df.columns) < 3:
+        if len(local_df.columns) < 3: 
             return []
             
         local_df.rename(columns={'0': 'Surname', '1': 'Firstname', '2': 'Matric NO'}, inplace=True)

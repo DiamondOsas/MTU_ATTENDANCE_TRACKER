@@ -6,13 +6,18 @@ from tksheet import Sheet
 from typing import Optional, List, Tuple, Any
 
 from internal.utils.csv_handler import read_csv_robust, save_csv
+
 from internal.utils.excel_styler import apply_excel_styling
 
 class DataTable(ctk.CTkFrame):
     """
     A wrapper around tksheet for displaying Pandas DataFrames with Excel-like features.
     Includes editing capabilities, search functionality, and status updates.
+    
     """
+    
+    
+    
     def __init__(self, parent: Any, dataframe: pd.DataFrame, editable: bool = True, **kwargs):
         super().__init__(parent, **kwargs)
         self.editable = editable

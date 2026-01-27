@@ -1,1 +1,5 @@
-py -3.12 -m nuitka --standalone --enable-plugin=tk-inter --windows-disable-console --follow-imports  main.py
+py -3.12 -m nuitka --standalone --enable-plugin=tk-inter  --follow-imports  main.py
+
+
+
+--windows-disable-console
