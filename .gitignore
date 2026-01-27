@@ -3,3 +3,4 @@ error.txt
 ideas.txt
 main.dist
 main.build
+__pycache__
