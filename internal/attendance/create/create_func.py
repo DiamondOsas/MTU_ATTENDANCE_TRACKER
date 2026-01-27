@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 from tkinter import filedialog
 import pandas as pd
-from typing import List, Optional, Set
+
 
 # Constants for folder structure
 DB_DIR = Path("db")
@@ -113,7 +113,7 @@ def prepare_attendance_files():
         except Exception as e:
             print(f"Error processing {file_name}: {e}")
 
-def get_attendance_files() -> List[str]:
+def get_attendance_files() -> list[str]:
     """Returns a list of all CSV filenames in the attendance folder."""
     if not ATTENDANCE_DIR.exists():
         return []
@@ -126,7 +126,7 @@ def load_csv_file() -> tuple:
         filetypes=[("CSV files", "*.csv"), ("All files", "*.*")]
     )
 
-def _get_external_matrics(external_csv_path: str) -> List[str]:
+def _get_external_matrics(external_csv_path: str) -> list[str]:
     """
     Helper function to extract matric numbers from an uploaded CSV.
     It tries to guess the column name automatically.
@@ -155,7 +155,7 @@ def _get_external_matrics(external_csv_path: str) -> List[str]:
         return []
 
 def update_attendance_sheet(attendance_file_name: str, program_type: str, date: str, 
-                            external_csv_path: str, matric_numbers_list: Optional[List[str]] = None):
+                            external_csv_path: str, matric_numbers_list: list[str] | None = None):
     """
     Updates the attendance sheet with checkmarks/crosses.
     """

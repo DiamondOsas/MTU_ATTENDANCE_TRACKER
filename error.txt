@@ -1,4 +1,21 @@
-So i have decided put the functions in record_func.py and the gui in record_gui.py 
-and then in absentees.py and attendace.py make it to invoke functions custom to the Type
-so it shhould pass arguments to open the gui and thereby naming all the places that is to be called "Absenteees" or "Attendeees"
-and making the it to inovke the funtion form the gui using target  then the tpr of mark that will be used ot sort
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python313\Lib\site-packages\jurigged\codetools.py", line 533, in _process_child_correspondence
+    orig.apply_correspondence(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        ccorr,
+        ^^^^^^
+        order=order,
+        ^^^^^^^^^^^^
+        controller=controller,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\user\AppData\Local\Programs\Python\Python313\Lib\site-packages\jurigged\codetools.py", line 744, in apply_correspondence
+    new_obj = self.reevaluate(corr.new.node, glb)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python313\Lib\site-packages\jurigged\codetools.py", line 832, in reevaluate
+    exec(code, glb, lcl)
+    ~~~~^^^^^^^^^^^^^^^^
+  File "C:\PROGRAMMING\CHAPEL\ATTENDANCE SOFTWARE\internal\attendance\create\create_func.py", line 158, in <adjust>
+    external_csv_path: str, matric_numbers_list: Optional[List[str]] = None):
+                                                 ^^^^^^^^
+NameError: name 'Optional' is not defined
