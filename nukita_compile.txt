@@ -1,1 +1,1 @@
-python -m nuitka --standalone --enable-plugin=tk-inter --windows-disable-console --collect-all=customtkinter --collect-all=tksheet --collect-all=pandas  main.py
+py -3.12 -m nuitka --standalone --enable-plugin=tk-inter --windows-disable-console --follow-imports  main.py

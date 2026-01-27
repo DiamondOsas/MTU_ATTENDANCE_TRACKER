@@ -1,0 +1,66 @@
+PS C:\PROGRAMMING\CHAPEL\ATTENDANCE SOFTWARE> py -3.12 -m nuitka --standalone --enable-plugin=tk-inter --windows-disable-console --follow-imports  main.py
+Nuitka-Options: Used command line options:
+Nuitka-Options:   --standalone --enable-plugin=tk-inter --windows-disable-console --follow-imports main.py
+Nuitka-Options: Following all imports is the default for standalone mode and need not be specified.
+Nuitka:WARNING: The old console option '--disable-console' should not be given anymore, use '--windows-console-mode=disable' instead. It also
+Nuitka:WARNING: has the extra mode 'attach' to consider.
+Nuitka: Starting Python compilation with:
+Nuitka:   Version '2.8.10' on Python 3.12 (flavor 'CPython Official') commercial grade 'not installed'.
+Nuitka-Plugins:anti-bloat: Not including 'pandas.core._numba.extensions' automatically in order to avoid bloat, but this may cause: no numba
+Nuitka-Plugins:anti-bloat: acceleration.
+Nuitka: Completed Python level compilation and optimization.
+Nuitka: Generating source code for C backend compiler.
+Nuitka: Running data composer tool for optimal constant value handling.
+Nuitka: Running C compilation via Scons.
+Nuitka-Scons: Mismatch between Python binary ('C:\Users\user\AppData\Local\Programs\Python\Python312\python.exe' -> 'pei-x86-64') and C
+Nuitka-Scons: compiler ('C:\TDM-GCC-64\bin\gcc.exe' -> 'pei-i386') arches, that compiler is ignored!
+Nuitka-Scons: Backend C compiler: gcc (gcc 14.2.0).
+Nuitka-Scons: Running '"C:\\Users\\user\\AppData\\Local\\Nuitka\\Nuitka\\Cache\\DOWNLO~1\\gcc\\x86_64\\14.2.0posix-19.1.1-12.0.0-msvcrt-r2\\mingw64\\bin\\ccache.exe" "C:\\Users\\user\\AppData\\Local\\Nuitka\\Nuitka\\Cache\\DOWNLO~1\\gcc\\x86_64\\14.2.0posix-19.1.1-12.0.0-msvcrt-r2\\mingw64\\bin\\gcc.exe" -o "module.dateutil.o" -c -std=c11 -fvisibility=hidden -fwrapv -pipe -Wno-unused-but-set-variable -fpartial-inlining -ftrack-macro-expansion=0 -Wno-deprecated-declarations -fno-var-tracking -Wno-misleading-indentation -fcompare-debug-second -O3 -D_NUITKA_STANDALONE_MODE -D_NUITKA_EXE_MODE -D_WIN32_WINNT=0x0601 -D__NUITKA_NO_ASSERT__ -D_NUITKA_WINMAIN_ENTRY_POINT -D_NUITKA_DISABLE_CONSOLE_WINDOW -D_NUITKA_CONSTANTS_FROM_RESOURCE -D_NUITKA_FROZEN=153 -IC:\\Users\\user\\AppData\\Local\\Programs\\Python\\PYTHON~2\\Lib\\SITE-P~1\\nuitka\\build\\inline_copy\\zlib -IC:\\Users\\user\\AppData\\Local\\Programs\\Python\\PYTHON~2\\include -I. -IC:\\Users\\user\\AppData\\Local\\Programs\\Python\\PYTHON~2\\Lib\\SITE-P~1\\nuitka\\build\\include -IC:\\Users\\user\\AppData\\Local\\Programs\\Python\\PYTHON~2\\Lib\\SITE-P~1\\nuitka\\build\\static_src -IC:\\Users\\user\\AppData\\Local\\Programs\\Python\\PYTHON~2\\Lib\\SITE-P~1\\nuitka\\build\\inline_copy\\libbacktrace "module.dateutil.c"' took 933.10 seconds
+Nuitka-Scons: Running '"C:\\Users\\user\\AppData\\Local\\Nuitka\\Nuitka\\Cache\\DOWNLO~1\\gcc\\x86_64\\14.2.0posix-19.1.1-12.0.0-msvcrt-r2\\mingw64\\bin\\ccache.exe" "C:\\Users\\user\\AppData\\Local\\Nuitka\\Nuitka\\Cache\\DOWNLO~1\\gcc\\x86_64\\14.2.0posix-19.1.1-12.0.0-msvcrt-r2\\mingw64\\bin\\gcc.exe" -o "module.dateutil.easter.o" -c -std=c11 -fvisibility=hidden -fwrapv -pipe -Wno-unused-but-set-variable -fpartial-inlining -ftrack-macro-expansion=0 -Wno-deprecated-declarations -fno-var-tracking -Wno-misleading-indentation -fcompare-debug-second -O3 -D_NUITKA_STANDALONE_MODE -D_NUITKA_EXE_MODE -D_WIN32_WINNT=0x0601 -D__NUITKA_NO_ASSERT__ -D_NUITKA_WINMAIN_ENTRY_POINT -D_NUITKA_DISABLE_CONSOLE_WINDOW -D_NUITKA_CONSTANTS_FROM_RESOURCE -D_NUITKA_FROZEN=153 -IC:\\Users\\user\\AppData\\Local\\Programs\\Python\\PYTHON~2\\Lib\\SITE-P~1\\nuitka\\build\\inline_copy\\zlib -IC:\\Users\\user\\AppData\\Local\\Programs\\Python\\PYTHON~2\\include -I. -IC:\\Users\\user\\AppData\\Local\\Programs\\Python\\PYTHON~2\\Lib\\SITE-P~1\\nuitka\\build\\include -IC:\\Users\\user\\AppData\\Local\\Programs\\Python\\PYTHON~2\\Lib\\SITE-P~1\\nuitka\\build\\static_src -IC:\\Users\\user\\AppData\\Local\\Programs\\Python\\PYTHON~2\\Lib\\SITE-P~1\\nuitka\\build\\inline_copy\\libbacktrace "module.dateutil.easter.c"' took 933.04 seconds
+Nuitka-Scons: Running '"C:\\Users\\user\\AppData\\Local\\Nuitka\\Nuitka\\Cache\\DOWNLO~1\\gcc\\x86_64\\14.2.0posix-19.1.1-12.0.0-msvcrt-r2\\mingw64\\bin\\ccache.exe" "C:\\Users\\user\\AppData\\Local\\Nuitka\\Nuitka\\Cache\\DOWNLO~1\\gcc\\x86_64\\14.2.0posix-19.1.1-12.0.0-msvcrt-r2\\mingw64\\bin\\gcc.exe" -o "module.dateutil.parser.o" -c -std=c11 -fvisibility=hidden -fwrapv -pipe -Wno-unused-but-set-variable -fpartial-inlining -ftrack-macro-expansion=0 -Wno-deprecated-declarations -fno-var-tracking -Wno-misleading-indentation -fcompare-debug-second -O3 -D_NUITKA_STANDALONE_MODE -D_NUITKA_EXE_MODE -D_WIN32_WINNT=0x0601 -D__NUITKA_NO_ASSERT__ -D_NUITKA_WINMAIN_ENTRY_POINT -D_NUITKA_DISABLE_CONSOLE_WINDOW -D_NUITKA_CONSTANTS_FROM_RESOURCE -D_NUITKA_FROZEN=153 -IC:\\Users\\user\\AppData\\Local\\Programs\\Python\\PYTHON~2\\Lib\\SITE-P~1\\nuitka\\build\\inline_copy\\zlib -IC:\\Users\\user\\AppData\\Local\\Programs\\Python\\PYTHON~2\\include -I. -IC:\\Users\\user\\AppData\\Local\\Programs\\Python\\PYTHON~2\\Lib\\SITE-P~1\\nuitka\\build\\include -IC:\\Users\\user\\AppData\\Local\\Programs\\Python\\PYTHON~2\\Lib\\SITE-P~1\\nuitka\\build\\static_src -IC:\\Users\\user\\AppData\\Local\\Programs\\Python\\PYTHON~2\\Lib\\SITE-P~1\\nuitka\\build\\inline_copy\\libbacktrace "module.dateutil.parser.c"' took 933.49 seconds
+Nuitka-Scons: Running '"C:\\Users\\user\\AppData\\Local\\Nuitka\\Nuitka\\Cache\\DOWNLO~1\\gcc\\x86_64\\14.2.0posix-19.1.1-12.0.0-msvcrt-r2\\mingw64\\bin\\ccache.exe" "C:\\Users\\user\\AppData\\Local\\Nuitka\\Nuitka\\Cache\\DOWNLO~1\\gcc\\x86_64\\14.2.0posix-19.1.1-12.0.0-msvcrt-r2\\mingw64\\bin\\gcc.exe" -o "module.dateutil.parser._parser.o" -c -std=c11 -fvisibility=hidden -fwrapv -pipe -Wno-unused-but-set-variable -fpartial-inlining -ftrack-macro-expansion=0 -Wno-deprecated-declarations -fno-var-tracking -Wno-misleading-indentation -fcompare-debug-second -O3 -D_NUITKA_STANDALONE_MODE -D_NUITKA_EXE_MODE -D_WIN32_WINNT=0x0601 -D__NUITKA_NO_ASSERT__ -D_NUITKA_WINMAIN_ENTRY_POINT -D_NUITKA_DISABLE_CONSOLE_WINDOW -D_NUITKA_CONSTANTS_FROM_RESOURCE -D_NUITKA_FROZEN=153 -IC:\\Users\\user\\AppData\\Local\\Programs\\Python\\PYTHON~2\\Lib\\SITE-P~1\\nuitka\\build\\inline_copy\\zlib -IC:\\Users\\user\\AppData\\Local\\Programs\\Python\\PYTHON~2\\include -I. -IC:\\Users\\user\\AppData\\Local\\Programs\\Python\\PYTHON~2\\Lib\\SITE-P~1\\nuitka\\build\\include -IC:\\Users\\user\\AppData\\Local\\Programs\\Python\\PYTHON~2\\Lib\\SITE-P~1\\nuitka\\build\\static_src -IC:\\Users\\user\\AppData\\Local\\Programs\\Python\\PYTHON~2\\Lib\\SITE-P~1\\nuitka\\build\\inline_copy\\libbacktrace "module.dateutil.parser._parser.c"' took 987.13 seconds
+Nuitka-Scons: Slow C compilation detected, used 360s so far, scalability problem.
+Nuitka-Scons: Running '"C:\\Users\\user\\AppData\\Local\\Nuitka\\Nuitka\\Cache\\DOWNLO~1\\gcc\\x86_64\\14.2.0posix-19.1.1-12.0.0-msvcrt-r2\\mingw64\\bin\\ccache.exe" "C:\\Users\\user\\AppData\\Local\\Nuitka\\Nuitka\\Cache\\DOWNLO~1\\gcc\\x86_64\\14.2.0posix-19.1.1-12.0.0-msvcrt-r2\\mingw64\\bin\\gcc.exe" -o "module.tksheet.main_table.o" -c -std=c11 -fvisibility=hidden -fwrapv -pipe -Wno-unused-but-set-variable -fpartial-inlining -ftrack-macro-expansion=0 -Wno-deprecated-declarations -fno-var-tracking -Wno-misleading-indentation -fcompare-debug-second -O3 -D_NUITKA_STANDALONE_MODE -D_NUITKA_EXE_MODE -D_WIN32_WINNT=0x0601 -D__NUITKA_NO_ASSERT__ -D_NUITKA_WINMAIN_ENTRY_POINT -D_NUITKA_DISABLE_CONSOLE_WINDOW -D_NUITKA_CONSTANTS_FROM_RESOURCE -D_NUITKA_FROZEN=153 -IC:\\Users\\user\\AppData\\Local\\Programs\\Python\\PYTHON~2\\Lib\\SITE-P~1\\nuitka\\build\\inline_copy\\zlib -IC:\\Users\\user\\AppData\\Local\\Programs\\Python\\PYTHON~2\\include -I. -IC:\\Users\\user\\AppData\\Local\\Programs\\Python\\PYTHON~2\\Lib\\SITE-P~1\\nuitka\\build\\include -IC:\\Users\\user\\AppData\\Local\\Programs\\Python\\PYTHON~2\\Lib\\SITE-P~1\\nuitka\\build\\static_src -IC:\\Users\\user\\AppData\\Local\\Programs\\Python\\PYTHON~2\\Lib\\SITE-P~1\\nuitka\\build\\inline_copy\\libbacktrace "module.tksheet.main_table.c"' took 367.02 seconds
+Nuitka-Scons: Backend C linking with 702 files (no progress information available for this stage).
+Nuitka-Scons: Compiled 702 C files using ccache.
+Nuitka-Scons: Cached C files (using ccache) with result 'cache miss': 702
+Nuitka-Postprocessing:WARNING: Failed to add resources to file 'main.dist\main.exe' in attempt 1 with error code 22.
+Disable Anti-Virus, e.g.
+Nuitka-Postprocessing:WARNING: Windows Defender for build folders.
+Retrying after a second of delay.
+Nuitka-Postprocessing:WARNING: Succeeded with add resources to file 'main.dist\main.exe' in attempt 2.
+Nuitka-Plugins:data-files: Included data file 'customtkinter\assets\fonts\CustomTkinter_shapes_font.otf' due to package data directory 'assets'
+Nuitka-Plugins:data-files: for 'customtkinter'.
+Nuitka-Plugins:data-files: Included data file 'customtkinter\assets\fonts\Roboto\Roboto-Medium.ttf' due to package data directory 'assets' for
+Nuitka-Plugins:data-files: 'customtkinter'.
+Nuitka-Plugins:data-files: Included data file 'customtkinter\assets\fonts\Roboto\Roboto-Regular.ttf' due to package data directory 'assets' for
+Nuitka-Plugins:data-files: 'customtkinter'.
+Nuitka-Plugins:data-files: Included data file 'customtkinter\assets\icons\CustomTkinter_icon_Windows.ico' due to package data directory
+Nuitka-Plugins:data-files: 'assets' for 'customtkinter'.
+Nuitka-Plugins:data-files: Included data file 'customtkinter\assets\themes\blue.json' due to package data directory 'assets' for
+Nuitka-Plugins:data-files: 'customtkinter'.
+Nuitka-Plugins:data-files: Included data file 'customtkinter\assets\themes\dark-blue.json' due to package data directory 'assets' for
+Nuitka-Plugins:data-files: 'customtkinter'.
+Nuitka-Plugins:data-files: Included data file 'customtkinter\assets\themes\green.json' due to package data directory 'assets' for
+Nuitka-Plugins:data-files: 'customtkinter'.
+Nuitka-Plugins:data-files: Included data file 'pandas\io\formats\templates\html.tpl' due to package data directory 'templates' for
+Nuitka-Plugins:data-files: 'pandas.io.formats'.
+Nuitka-Plugins:data-files: Included data file 'pandas\io\formats\templates\html_style.tpl' due to package data directory 'templates' for
+Nuitka-Plugins:data-files: 'pandas.io.formats'.
+Nuitka-Plugins:data-files: Included data file 'pandas\io\formats\templates\html_table.tpl' due to package data directory 'templates' for
+Nuitka-Plugins:data-files: 'pandas.io.formats'.
+Nuitka-Plugins:data-files: Included data file 'pandas\io\formats\templates\latex.tpl' due to package data directory 'templates' for
+Nuitka-Plugins:data-files: 'pandas.io.formats'.
+Nuitka-Plugins:data-files: Included data file 'pandas\io\formats\templates\latex_longtable.tpl' due to package data directory 'templates' for
+Nuitka-Plugins:data-files: 'pandas.io.formats'.
+Nuitka-Plugins:data-files: Included data file 'pandas\io\formats\templates\latex_table.tpl' due to package data directory 'templates' for
+Nuitka-Plugins:data-files: 'pandas.io.formats'.
+Nuitka-Plugins:data-files: Included data file 'pandas\io\formats\templates\string.tpl' due to package data directory 'templates' for
+Nuitka-Plugins:data-files: 'pandas.io.formats'.
+Nuitka-Plugins:data-files: Included data file 'pandas\io\formats\templates\typst.tpl' due to package data directory 'templates' for
+Nuitka-Plugins:data-files: 'pandas.io.formats'.
+Nuitka-Plugins:tk-inter: Included 89 data files due to Tk needed for tkinter usage.
+Nuitka-Plugins:tk-inter: Included 834 data files due to Tcl needed for tkinter usage.
+Nuitka-Plugins:data-files: Included 604 data files due to package data directory '.' for 'tzdata.zoneinfo'.
+Nuitka: Keeping build directory 'main.build'.
+Nuitka: Successfully created 'C:\PROGRAMMING\CHAPEL\ATTENDANCE SOFTWARE\main.dist\main.exe'.

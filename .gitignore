@@ -1,3 +1,5 @@
 .gitignore
 error.txt
 ideas.txt
+main.dist
+main.build
