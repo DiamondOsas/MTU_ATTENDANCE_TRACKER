@@ -41,7 +41,7 @@ class AddAttendanceWindow(ctk.CTkToplevel):
         frame_prog.grid(row=2, column=0, padx=20, pady=10, sticky="ew")
         ctk.CTkLabel(frame_prog, text="Choose Program Type:").pack(pady=5)
         
-        programs = ["MORNING SERVICE", "EVENING SERVICE", "MANNA WATER", "SUNDAY SERVICE", "BIBLE STUDY" ,"PMCH", "MTU PRAYS", "SPECIAL SERVICE"]
+        programs = ["MORNING SERVICE", "EVENING SERVICE", "MANNA WATER", "SUNDAY SERVICE", "HOUSE FELLOWSHIP", "BIBLE STUDY" ,"PMCH", "MTU PRAYS", "SPECIAL SERVICE"]
         self.prog_dropdown = ctk.CTkComboBox(frame_prog, values=programs, width=300)
         self.prog_dropdown.pack(pady=10)
         self.prog_dropdown.set(programs[0])

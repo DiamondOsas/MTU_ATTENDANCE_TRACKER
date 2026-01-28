@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 from tkinter import filedialog
 import pandas as pd
-
+from internal.utils.general import _get_documents_folder
 
 # Constants for folder structure
 DB_DIR = Path("db")
@@ -121,9 +121,12 @@ def get_attendance_files() -> list[str]:
 
 def load_csv_file() -> tuple:
     """Opens a file picker dialog."""
+    documents_path =_get_documents_folder()
+    target_dir = documents_path / "ATTENDANCE"
     return filedialog.askopenfilenames(
         title="Select CSV file(s)",
-        filetypes=[("CSV files", "*.csv"), ("All files", "*.*")]
+        filetypes=[("CSV files", "*.csv"), ("All files", "*.*")],
+        initialdir=target_dir
     )
 
 def _get_external_matrics(external_csv_path: str) -> list[str]:
