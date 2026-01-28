@@ -12,6 +12,7 @@ def register_student(surname, name, matric_no, level):
         matric_no (str): The student's matriculation number.
         level (str): The student's level (e.g., '100', '200').
     """
+    
     # File path we are appending to 
     filepath = Path(f"db/allstudents/{level}level.csv")
     filepath.parent.mkdir(parents=True, exist_ok=True)
@@ -31,5 +32,5 @@ def register_student(surname, name, matric_no, level):
     else:
         with open(filepath, mode="a", encoding="utf-8", newline="") as f:
             writer = csv.writer(f)
-            writer.writerow([surname, name, matric_no])
+            writer.writerow([surname.upper(), name.upper(), matric_no])
             return True        

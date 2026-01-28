@@ -1,5 +1,5 @@
-py -3.12 -m nuitka --standalone --enable-plugin=tk-inter  --follow-imports  main.py
+py -3.12 -m nuitka --standalone --enable-plugin=tk-inter  --follow-imports --include-package=customtkinter --include-package=pandas --include-package=tksheet --include-package=openpyxl --include-package=pyperclip main.py
 
-
+#Include package is important so as to make sure that it carries all the packages 
 
 --windows-disable-console

@@ -1,0 +1,1 @@
+#Generate a code to look in the smae folder that the python file is and then genrate a code to get all the csv files in that folder open each one of then and then  capitlaise all the string data througout
