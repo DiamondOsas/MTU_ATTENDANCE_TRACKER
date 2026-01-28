@@ -1,28 +1,19 @@
-Make it such that there is a copy of the all students and attendace in the documnet folder that is an exact copy of the one in the database
-Also there is a folder that backups previous versions file form the yesterday and then saves it in teh temp folder
-Then for the exeat it has a button in the normal of the app to do studnet for exeat
 
-
-
-Also check the whole codebase for the logic for things and possible flaws in the code or better ways to implemet thtings that is more user friendly
-
-For the file maintiaer updated make sure that the files update in realtime even thought the applcaitions is oopen to make sure that the software is qualtiy
 
 CRITICAL
-1. Make it to be compatible on common man laptop with speed and make an installer for it
-2. BE lazy
-a. Make the lines of the stuff to be thick
+=.Make it such that there is a copy of the all students and attendace in the documnet folder that is an exact copy of the one in the database 
+=.Then for the exeat it has a button in the normal of the app to do studnet for exeat 
+=. Make it to be compatible on common man laptop with speed and make an installer for it
+=.For the file maintiaer updated make sure that the files update in realtime even thought the applcaitions is oopen to make sure that the software is qualtiy
+=. Print to number of times a person missed for a week and folder 
+=. Automatically Sort Date and Activity in the db/attendance to ensure things are done in order even without order
+=. Make the Pront Reocrd to show the activites s that one can choose to just print one Activity or Activity over a peroid of time with selecting specific ones
 
 
 
-
-1. Add them to be able to print people that attended 
-2. Print to number of times a person missed for a week and folder
-
-
-ESSIEN
-1. Make it to have an online database using (supabase)
-2. Make it that one will be able to print absenttes over a period of time
-3. Integgrate with MTU-HUB later
+ESSIEN 
+= Make it to have an online database using (supabase)
+=. Make it that one will be able to print absenttes over a period of time
+=. Integgrate with MTU-HUB later
 
 
