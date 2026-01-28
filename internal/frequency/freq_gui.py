@@ -76,7 +76,7 @@ class FrequencyWindow(ctk.CTkToplevel):
         selection = cal.get_selection()
         if selection and selection[0] and selection[1]:
             self.start_date, self.end_date = selection
-            self.lbl_date_range.configure(text=f"Range: {self.start_date.strftime('%d/%m/%y')}" - {self.end_date.strftime('%d/%m/%y')})
+            self.lbl_date_range.configure(text=f"Range: {self.start_date.strftime('%d/%m/%y')}" + "-" + {self.end_date.strftime('%d/%m/%y')})
         elif selection and selection[0]:
             self.start_date = self.end_date = selection[0]
             self.lbl_date_range.configure(text=f"Range: {self.start_date.strftime('%d/%m/%y')} (Single Day)")
