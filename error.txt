@@ -1,1 +1,4 @@
-In 
+In prepare.py omplete the function
+sort_attendance_files()
+It sorts the activites in each of the csv files in attendance accroding to date
+E.g The current 200level is cod 

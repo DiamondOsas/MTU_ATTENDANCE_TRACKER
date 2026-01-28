@@ -96,7 +96,7 @@ def prepare_attendance_files():
                 
                 if new_students_to_add:
                     print(f"Also appended {len(new_students_to_add)} new students to: {file_name}")
-
+    
             else:
                 # File structure is good, just append new students if any
                 if new_students_to_add:
@@ -111,6 +111,11 @@ def prepare_attendance_files():
         except Exception as e:
             print(f"Error processing file {source_file_path}: {e}")
 
+def sort_attendance_files():
+    #Loop over all the files in db/attendance
+    # For each file look at the date row and if it is not sorted sort it in acedning order
+    # Fot the activity sorting in the date sort it according to this programs = ["MORNING SERVICE", "EVENING SERVICE", "MANNA WATER", "SUNDAY SERVICE", "HOUSE FELLOWSHIP", "BIBLE STUDY" ,"PMCH", "MTU PRAYS", "SPECIAL SERVICE"]
+    # Then save the file after this is done simple 
 
 if __name__ == '__main__':
     # This block allows you to test the function directly by running this script.

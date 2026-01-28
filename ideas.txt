@@ -1,6 +1,7 @@
 
 CRITICAL
 =. Automatically Sort Date and Activity in the db/attendance to ensure things are done in order even without order
+=. Improve the pront absenttes by makeing it more optimiwed and it should be abel to select the servce one want too rpint for  
 =. Print to number of times people missed or attended for a peroid of time dynamically 
 
 IDEAS
