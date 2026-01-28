@@ -61,11 +61,14 @@ class AttendanceApp(ctk.CTk):
         self.print_absentees_button = ctk.CTkButton(self, text="Print Absentees", command=self.open_absentees_viewer_window)
         self.print_absentees_button.grid(row=8, column=0, padx=40, pady=10, sticky="ew")
 
+        self.frequency_button = ctk.CTkButton(self, text="Frequency Analysis", command=self.open_frequency_window)
+        self.frequency_button.grid(row=9, column=0, padx=40, pady=10, sticky="ew")
+
         self.settings_button = ctk.CTkButton(self, text="Settings", command=self.placeholder_command)
-        self.settings_button.grid(row=9, column=0, padx=40, pady=10, sticky="ew")
+        self.settings_button.grid(row=10, column=0, padx=40, pady=10, sticky="ew")
 
         self.restore_button = ctk.CTkButton(self, text="Restore Database Backup", command=self.open_revert_window, fg_color="#7743F2", hover_color="#B71C1C")
-        self.restore_button.grid(row=10, column=0, padx=40, pady=10, sticky="ew")
+        self.restore_button.grid(row=11, column=0, padx=40, pady=10, sticky="ew")
 
 
     def open_register_window(self): 
@@ -124,6 +127,14 @@ class AttendanceApp(ctk.CTk):
         self.withdraw()
         from internal.records.absentees.absentees import ChooseAbsenteeFileWindow
         ChooseAbsenteeFileWindow(self)
+
+    def open_frequency_window(self):
+        """
+        Closes the main menu and opens the frequency analysis window.
+        """
+        self.withdraw()
+        from internal.frequency.freq_gui import ChooseFrequencyFileWindow
+        ChooseFrequencyFileWindow(self)
 
     def open_revert_window(self):
         """
