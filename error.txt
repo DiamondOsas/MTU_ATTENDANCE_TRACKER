@@ -1,4 +1,65 @@
-In prepare.py omplete the function
-sort_attendance_files()
-It sorts the activites in each of the csv files in attendance accroding to date
-E.g The current 200level is cod 
+Based on your current codebase structure in internal/records, here are 5 ways to  
+  implement a "Frequency/Count Report" feature. I have ordered them from easiest to 
+  integrate to most robust.
+
+  1. The "Summary Export" Option (Quickest)
+  Concept: Keep the current GUI exactly as it is. Just modify the Export button     
+  logic. When the user clicks "Export All", ask them (or check a box) if they want a  "Detailed Daily Log" (current behavior) or a "Frequency Summary".
+
+   * How: In PrintRecordsWindow, modify export_data.
+   * Logic: instead of saving separate files for each date, create a single       
+     DataFrame where you iterate through the range, count occurrences per student,
+     and save one Excel file with columns: Surname | Firstname | Matric No | Total
+     Count.
+   * Pros: Minimal UI changes.
+   * Cons: You can't see the counts on screen before exporting.
+
+  2. The "View Mode" Toggle (Interactive)
+  Concept: Add a toggle in PrintRecordsWindow to switch the display between
+  "Chronological" (Date by Date) and "Aggregate" (Ranked by Count).
+
+   * How: Add a ctk.CTkSegmentedButton with values ["Daily View", "Frequency View"].   * Logic:
+       * Daily View: Your current loop (Date -> Activity -> List of Names).
+       * Frequency View: Loop through the range silently, aggregate counts into a   
+         dictionary {MatricNo: Count}, then display a sorted list: "1. John Doe     
+         (MAT123) - Missed 5 times".
+   * Pros: User sees the data immediately.
+   * Cons: Slightly more complex display logic in one file.
+
+  3. The "Threshold Filter" (Action-Oriented)
+  Concept: Instead of just listing everyone's count, allow the user to filter: "Show  me everyone who missed more than [ X ] times."
+
+   * How: Add a small input box Threshold: [ 3 ] next to the "Show Records" button.
+   * Logic: When processing the specific date range, filter out any student whose  
+     calculated count is less than the threshold.
+   * Pros: Extremely useful for finding "at-risk" students or those eligible for   
+     rewards (perfect attendance).
+   * Cons: Hides data for people below the threshold (unless set to 0).
+
+  4. Dedicated "Statistics" Module (Clean Architecture)
+  Concept: Create a new folder internal/records/statistics with its own    
+  StatisticsWindow.
+
+   * How: Decouple this from the "Records" view. The "Records" view is for      
+     editing/checking specific days. The "Statistics" view is for analysis.     
+   * Logic: This window would handle selecting a file, a date range, and then   
+     generating a pure numbers report (Table of students vs. Counts) without the
+     "Daily View" overhead.
+   * Pros: Keeps code clean. Allows for future features like charts or graphs.  
+   * Cons: Requires creating new files/classes.
+
+  5. The "Student History" Card (Granular)
+  Concept: "Print out a document" for a specific person.
+
+   * How: Add a search bar. User types a Matric Number.
+   * Logic: The system scans the entire date range. The output document is a "Report     Card" for that specific student:
+       * Student: John Doe
+       * Total Absent: 4
+       * Dates: 12/01 (Service), 14/01 (Bible Study)...
+   * Pros: Great for disciplinary actions or specific inquiries.
+   * Cons: Only processes one student at a time, not a batch report.
+
+  Recommended Implementation Plan
+  I suggest combining #1 and #2.
+   1. Add a "View Mode" toggle to the existing window so users can see the counts on      screen.
+   2. Update the Export function to respect that mode (exporting the summary list if      "Frequency View" is active).
