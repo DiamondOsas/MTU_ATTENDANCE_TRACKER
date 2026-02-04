@@ -27,7 +27,7 @@ jobs:
 
     - name: Build EXE package
       run: |
-        python -m nuitka --standalone --onefile --enable-plugin=tk-inter  --windows-console-mode=disable  --follow-imports --include-package=customtkinter --include-package=pandas --include-package=tksheet --include-package=openpyxl --include-package=pyperclip main.py
+        python -m nuitka --standalone --onefile --assume-yes-for-downloads --enable-plugin=tk-inter  --windows-console-mode=disable  --follow-imports --include-package=customtkinter --include-package=pandas --include-package=tksheet --include-package=openpyxl --include-package=pyperclip main.py
 
     - name: Create Realese 
       uses: softprops/action-gh-release@v2  
