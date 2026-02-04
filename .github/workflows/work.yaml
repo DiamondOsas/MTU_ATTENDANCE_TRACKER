@@ -1,0 +1,40 @@
+name : Build EXE Package
+
+on:
+  push:
+    tags:
+      - 'v*' 
+  pull_request:
+
+permissions:
+  contents: write
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+        pip install nuitka
+
+    - name: Build EXE package
+      run: |
+        python -m nuitka --standalone --onefile --enable-plugin=tk-inter  --windows-disable-console  --follow-imports --include-package=customtkinter --include-package=pandas --include-package=tksheet --include-package=openpyxl --include-package=pyperclip main.py
+
+    - name: Create Realese 
+      uses: softprops/action-gh-release@v2  
+      with:
+        files: build/main.exe
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
