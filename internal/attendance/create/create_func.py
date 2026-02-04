@@ -33,7 +33,7 @@ def prepare_attendance_files():
     for source_path in student_files:
         file_name = source_path.name
         dest_path = ATTENDANCE_DIR / file_name
-
+    
         try:
             # 1. Read Source Students
             source_students = {}
