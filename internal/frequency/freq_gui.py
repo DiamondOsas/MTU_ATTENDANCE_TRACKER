@@ -6,7 +6,7 @@ from internal.choosecsv import ChooseCSVWindow
 from internal.calender import CalendarDialog
 from internal.frequency.freq_func import calculate_frequency
 from internal.utils.excel_styler import apply_excel_styling
-
+from internal.utils.general import _get_documents_folder
 class ChooseFrequencyFileWindow(ChooseCSVWindow):
     def __init__(self, master):
         attendance_dir = os.path.join(os.path.dirname(__file__), "..", "..", "db", "attendance")
@@ -131,12 +131,15 @@ class FrequencyWindow(ctk.CTkToplevel):
         e_str = self.end_date.strftime("%d-%m-%y")
         
         default_name = f"{level_name}_{self.current_mode.upper()}_FREQ_{s_str}_to_{e_str}.xlsx"
-        
+        documents_path = _get_documents_folder
+        filepath = documents_path / "ATTENDANCE_MTU" / "FREQUENCY"
+
         save_path = filedialog.asksaveasfilename(
             defaultextension=".xlsx",
             filetypes=[("Excel Files", "*.xlsx")],
             initialfile=default_name,
-            title="Export Frequency Report"
+            title="Export Frequency Report",
+            intialdir=filepath
         )
         
         if save_path:

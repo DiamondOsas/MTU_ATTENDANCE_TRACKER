@@ -96,10 +96,12 @@ def create_attendance_mtu():
             sub_subfolder1 = subfolder / "ATTENDEES"
             sub_subfolder2 = subfolder / "ABSENTEES"
             sub_subfolder3 = subfolder / "REPORT"
+            sub_subfolder4 = subfolder / "FREQUENCY"
 
             sub_subfolder1.mkdir(parents=True, exist_ok=True)
             sub_subfolder2.mkdir(parents=True, exist_ok=True)
             sub_subfolder3.mkdir(parents=True, exist_ok=True)
+            sub_subfolder4.mkdir(parents=True, exist_ok= True)
             print("Created Attendance Folders")
     except Exception as e:
     
