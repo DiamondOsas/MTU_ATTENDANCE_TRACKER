@@ -2,8 +2,6 @@ name : Build EXE Package
 
 on:
   push:
-    tags:
-      - 'v*' 
   pull_request:
 
 permissions:
@@ -12,7 +10,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - name: Checkout repository
@@ -35,6 +33,6 @@ jobs:
     - name: Create Realese 
       uses: softprops/action-gh-release@v2  
       with:
-        files: build/main.exe
+        files: main.exe
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
