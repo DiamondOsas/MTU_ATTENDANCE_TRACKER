@@ -27,12 +27,16 @@ jobs:
 
     - name: Build EXE package
       run: |
-        python -m nuitka --standalone --onefile --assume-yes-for-downloads --enable-plugin=tk-inter  --windows-console-mode=disable  --follow-imports --include-package=customtkinter --include-package=pandas --include-package=tksheet --include-package=openpyxl --include-package=pyperclip main.py
+        python -m nuitka --standalone --onefile --assume-yes-for-downloads --enable-plugin=tk-inter  --windows-console-mode=disable  --follow-imports --include-package=customtkinter --include-package=pandas --include-package=tksheet --include-package=openpyxl --include-package=pyperclip -o main.exe main.py
 
-    - name: Create Realese 
-      uses: softprops/action-gh-release@v2  
+    - name: Create and Upload Release
+      uses: svenstaro/upload-release-action@v2
       with:
-        tag-name: latest
-        files: main.exe
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: main.exe
+        asset_name: MTU_ATTENDANCE_APP.exe
+        overwrite: true
+        body: |
+          Changes
+          - Bugs Fixes 
+          - Update Feature Done
