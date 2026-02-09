@@ -1,9 +1,6 @@
 
 CRITICAL
-=. Automatically Sort Date and Activity in the db/attendance to ensure things are done in order even without order
-=. Improve the pront absenttes by makeing it more optimiwed and it should be abel to select the servce one want too rpint for 
 a.  When a date  is selceted the suer still has to still choose the services manually 
-=. Print to number of times people missed or attended for a peroid of time dynamically 
 
 IDEAS
 =.Make it such that there is a copy of the all students and attendace in the documnet folder that is an exact copy of the one in the database 
